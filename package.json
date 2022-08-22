@@ -1,0 +1,8 @@
+{
+  "name": "joyid-sdk-js",
+  "version": "1.0.0",
+  "description": "The JavaScript SDK of JoyID",
+  "main": "index.js",
+  "author": "dylan",
+  "license": "MIT"
+}
