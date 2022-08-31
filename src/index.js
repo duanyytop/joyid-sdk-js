@@ -3,9 +3,11 @@ var EC = require('elliptic').ec;
 // Create and initialize EC context
 // (better do it once and reuse it)
 var ec = new EC('p256');
+ec.keyFromPrivate()
 
 // Generate keys
 var key = ec.genKeyPair();
+console.log(JSON.stringify(key.getPrivate()))
 
 console.log(key.getPublic(false, "hex"))
 
