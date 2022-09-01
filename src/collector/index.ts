@@ -68,7 +68,7 @@ export class Collector {
     }
   }
 
-  async collectInputs(liveCells: IndexerCell[], needCapacity: bigint, fee: bigint): Promise<CollectResult> {
+  collectInputs(liveCells: IndexerCell[], needCapacity: bigint, fee: bigint): CollectResult {
     let inputs: CKBComponents.CellInput[] = []
     let sum = BigInt(0)
     for (let cell of liveCells) {

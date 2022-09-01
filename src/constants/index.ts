@@ -1,5 +1,8 @@
 export const FEE = BigInt(30000)
 export const MIN_CAPACITY = BigInt(62) * BigInt(100000000)
+export const WITNESS_NATIVE_MODE = "A0"
+export const MODE_PUBKEY_LEN = 65 * 2
+export const SIGNATURE_LEN = 64 * 2
 
 const TestnetInfo = {
   JoyIDLockScript: {

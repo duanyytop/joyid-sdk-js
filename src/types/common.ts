@@ -6,4 +6,4 @@ export type Byte24 = string
 export type Byte32 = string
 export type Bytes = string
 export type Address = string
-export type Capacity = BigInt
+export type Capacity = bigint
