@@ -1,4 +1,5 @@
 import {
+  bytesToHex,
   hexToBytes,
   PERSONAL,
   rawTransactionToHash,
@@ -8,7 +9,7 @@ import {
 import {ec as EC} from 'elliptic'
 import sha256 from "fast-sha256";
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
-import { getPublicKey, remove0x } from '../utils'
+import { append0x, getPublicKey, remove0x } from '../utils'
 import { Hex } from '../types'
 import { MODE_PUBKEY_SIG_LEN, WITNESS_NATIVE_MODE } from '../constants'
 
@@ -45,10 +46,18 @@ export const signTransaction = (key: EC.KeyPair, transaction: CKBComponents.RawT
     hash.update(bytes)
   })
 
-  const message = `0x${hash.digest('hex')}`
+  const message = `${hash.digest('hex')}`
   const mode = WITNESS_NATIVE_MODE
   const pubKey = getPublicKey(key)
-  emptyWitness.lock = `0x${mode}${pubKey}${signMessage(key, message)}`
+
+  const authData ="49960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d97630162f9fb77"
+  const clientData = `7b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a22${message}222c226f726967696e223a22687474703a2f2f6c6f63616c686f73743a38303030222c2263726f73734f726967696e223a66616c73657d`
+
+  const clientDataHash = sha256Hash(clientData);
+  const signData = `0x${authData}${clientDataHash}`
+  const signature = signMessage(key, signData)
+
+  emptyWitness.lock = `0x${mode}${pubKey}${signature}${authData}${clientData}`
 
   console.log(JSON.stringify(emptyWitness))
 
@@ -70,7 +79,16 @@ export const signMessage = (key: EC.KeyPair, message: Hex) => {
   let result = key.verify(msg, sig)
   console.log('validate signature: ', result)
 
-  const signature = `${sig.r.toString('hex')}${sig.s.toString('hex')}`
-  
+  const signature = `${paddingSig(sig.r.toString('hex'))}${paddingSig(sig.s.toString('hex'))}`
+
   return signature
+}
+
+const sha256Hash = (message: Hex): Hex => {
+  let hash = sha256(hexToBytes(append0x(message)))
+  return remove0x(bytesToHex(hash))
+}
+
+const paddingSig = (sig: Hex): Hex => {
+  return sig.length == 63 ? `0${sig}` : sig
 }
