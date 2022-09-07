@@ -59,8 +59,6 @@ export const signTransaction = (key: EC.KeyPair, transaction: CKBComponents.RawT
 
   emptyWitness.lock = `0x${mode}${pubKey}${signature}${authData}${clientData}`
 
-  console.log(JSON.stringify(emptyWitness))
-
   const signedWitnesses = [serializeWitnessArgs(emptyWitness), ...witnessGroup.slice(1)]
 
   return {
