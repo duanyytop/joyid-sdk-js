@@ -77,9 +77,7 @@ export const signMessage = (key: EC.KeyPair, message: Hex) => {
   let result = key.verify(msg, sig)
   console.log('validate signature: ', result)
 
-  const signature = `${paddingSig(sig.r.toString('hex'))}${paddingSig(sig.s.toString('hex'))}`
-
-  return signature
+  return Buffer.concat([padding(sig.r.toBuffer()), padding(sig.s.toBuffer())]).toString('hex')
 }
 
 const sha256Hash = (message: Hex): Hex => {
@@ -87,6 +85,8 @@ const sha256Hash = (message: Hex): Hex => {
   return remove0x(bytesToHex(hash))
 }
 
-const paddingSig = (sig: Hex): Hex => {
-  return sig.length == 63 ? `0${sig}` : sig
+const padding = (sig: Buffer): Buffer => {
+  const paddingLength = 32 - sig.length
+  const zeroBuf = Buffer.alloc(paddingLength).fill(0x00)
+  return paddingLength > 0 ? Buffer.concat([zeroBuf, sig]) : sig
 }

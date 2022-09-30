@@ -14,6 +14,6 @@ export interface JoyIDInfo {
   pubKey: Hex
   credentialId: Hex
   alg: Hex
-  cotaCellId: Hex
+  cotaCellId?: Hex
   subKeys?: SubKeyInfo[]
 }
