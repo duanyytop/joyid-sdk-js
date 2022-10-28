@@ -1,8 +1,9 @@
 import { Collector } from '../src/collector'
-import { sendCKBFromP256Lock } from '../src/service'
+import { sendCKBFromP256Lock } from '../src/service/transaction'
 import { addressFromPrivateKey } from '../src/utils'
 
 const FROM_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906260f1f657761'
+// const FROM_ADDRESS = 'ckt1q3excgzey7lepv7per00j7fn8edqf78c9c2cu234mm595e6s6wx0zqdwwhnxdxd504kp0r2a9q4wa90n8sys2lse0p2jy'
 const TO_ADDRESS = 'ckt1qyq897k5m53wxzup078jwkucvvsu8kzv55rqqm6glm'
 
 const run = async () => {
