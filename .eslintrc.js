@@ -16,8 +16,5 @@ module.exports = {
         extensions: ['.js'],
       },
     },
-  },
-  rules: {
-    'prettier/prettier': 'off',
-  },
+  }
 }
