@@ -16,7 +16,7 @@ export const getPublicKey = (key: EC.KeyPair) => {
 export const lockFromPubKey = (pubKey: Hex, isMainnet = false): CKBComponents.Script => {
   return {
     ...getJoyIDLockScript(isMainnet),
-    args: `0x01${blake160(pubKey, 'hex')}`,
+    args: `0x0001${blake160(pubKey, 'hex')}`,
   }
 }
 

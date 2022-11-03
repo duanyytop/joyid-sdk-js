@@ -1,17 +1,17 @@
 export const FEE = BigInt(6000)
 export const MIN_CAPACITY = BigInt(62) * BigInt(100000000)
-export const WITNESS_NATIVE_MODE = "a0"
+export const WITNESS_NATIVE_MODE = "01"
 export const MODE_PUBKEY_SIG_LEN = (1 + 64 + 64) * 2
 
 const TestnetInfo = {
   JoyIDLockScript: {
-    codeHash: '0x726c205927bf90b3c1c8def979333e5a04f8f82e158e2a35dee85a6750d38cf1',
+    codeHash: '0xd23761b364210735c19c60561d213fb3beae2fd6172743719eff6920e020baac',
     hashType: 'type',
     args: '',
   } as CKBComponents.Script,
 
   JoyIDLockDep: {
-    outPoint: { txHash: '0x2782dc9807748c0671593ea2d701b73ca1539954b066b13e22f9073b836ea139', index: '0x0' },
+    outPoint: { txHash: '0xba9f322c1c8ca59b72df1e2dfaca3eda7d9da33b10dd92b798ac48da231c3c34', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 
