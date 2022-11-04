@@ -3,7 +3,7 @@ import { sendCKBFromP256Lock } from '../src/service/transaction'
 import { addressFromPrivateKey } from '../src/utils'
 
 const FROM_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906260f1f657761'
-// const FROM_ADDRESS = 'ckt1qpexcgzey7lepv7per00j7fn8edqf78c9c2cu234mm595e6s6wx0zqgqqxh8tenxnx686mqh34wjs2hwjhenczg90cxy6gu5'
+// const FROM_ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqxh8tenxnx686mqh34wjs2hwjhenczg90c3e06au'
 const TO_ADDRESS = 'ckt1qyq897k5m53wxzup078jwkucvvsu8kzv55rqqm6glm'
 
 const run = async () => {
