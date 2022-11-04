@@ -29,3 +29,9 @@ export const addressFromPrivateKey = (privateKey: Uint8Array | Hex, isMainnet = 
   const pubKey = append0x(getPublicKey(key))
   return scriptToAddress(lockFromPubKey(pubKey, isMainnet), isMainnet)
 }
+
+export const pubkeyFromPrivateKey = (privateKey: Uint8Array | Hex) => {
+  const key = keyFromPrivate(privateKey)
+  const pubKey = append0x(getPublicKey(key))
+  return pubKey
+}
