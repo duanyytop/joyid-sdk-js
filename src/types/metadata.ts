@@ -1,4 +1,4 @@
-import { Hex } from "./common"
+import { Hex } from './common'
 
 export interface SubKeyInfo {
   pubKey: Hex

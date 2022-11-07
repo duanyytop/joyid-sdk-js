@@ -1,7 +1,7 @@
 import { blake160, scriptToAddress } from '@nervosnetwork/ckb-sdk-utils'
-import {ec as EC} from 'elliptic'
+import { ec as EC } from 'elliptic'
 import { getJoyIDLockScript } from '../constants'
-import { Address, Hex } from "../types"
+import { Address, Hex } from '../types'
 import { append0x } from './hex'
 
 export const keyFromPrivate = (privateKey: Uint8Array | Hex): EC.KeyPair => {

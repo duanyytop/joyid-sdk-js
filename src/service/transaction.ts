@@ -1,18 +1,24 @@
-import { addressToScript } from "@nervosnetwork/ckb-sdk-utils";
-import { Collector } from "../collector";
-import { FEE, getJoyIDCellDep } from "../constants";
-import { signTransaction } from "../signature";
-import { Address, Capacity, Hex } from "../types";
-import { keyFromPrivate } from "../utils";
+import { addressToScript } from '@nervosnetwork/ckb-sdk-utils'
+import { Collector } from '../collector'
+import { FEE, getJoyIDCellDep } from '../constants'
+import { signTransaction } from '../signature'
+import { Address, Capacity, Hex } from '../types'
+import { keyFromPrivate } from '../utils'
 
-export const sendCKBFromP256Lock = async (collector: Collector, fromPrivateKey: Hex, from: Address, to: Address, amount: Capacity) => {
-  const isMainnet = from.startsWith("ckb")
+export const sendCKBFromP256Lock = async (
+  collector: Collector,
+  fromPrivateKey: Hex,
+  from: Address,
+  to: Address,
+  amount: Capacity,
+) => {
+  const isMainnet = from.startsWith('ckb')
   const fromLock = addressToScript(from)
   const cells = await collector.getCells(fromLock)
   if (cells == undefined || cells.length == 0) {
     throw new Error('The from address has no live cells')
   }
-  const {inputs, capacity: inputCapacity} = collector.collectInputs(cells, amount, FEE)
+  const { inputs, capacity: inputCapacity } = collector.collectInputs(cells, amount, FEE)
 
   const toLock = addressToScript(to)
   let outputs: CKBComponents.CellOutput[] = [
@@ -28,7 +34,7 @@ export const sendCKBFromP256Lock = async (collector: Collector, fromPrivateKey: 
   })
   const cellDeps = [getJoyIDCellDep(isMainnet)]
 
-   const rawTx: any = {
+  const rawTx: any = {
     version: '0x0',
     cellDeps,
     headerDeps: [],
@@ -42,7 +48,7 @@ export const sendCKBFromP256Lock = async (collector: Collector, fromPrivateKey: 
   const key = keyFromPrivate(fromPrivateKey)
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
-  
+
   let txHash = await collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`sendCKBFromP256Lock tx has been sent with tx hash ${txHash}`)
   return txHash

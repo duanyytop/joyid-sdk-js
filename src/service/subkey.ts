@@ -6,13 +6,13 @@ import { Servicer } from '../types/joyid'
 import { append0x, keyFromPrivate, pubkeyFromPrivateKey } from '../utils'
 
 export const sendCKBWithSubkeyUnlock = async (
-  servicer: Servicer, 
-  subPrivateKey: Hex, 
+  servicer: Servicer,
+  subPrivateKey: Hex,
   from: Address,
-  to: Address, 
+  to: Address,
   amount: Capacity,
 ) => {
-  const isMainnet = from.startsWith("ckb")
+  const isMainnet = from.startsWith('ckb')
   const fromLock = addressToScript(from)
   const cells = await servicer.collector.getCells(fromLock)
   if (cells == undefined || cells.length == 0) {
@@ -29,7 +29,7 @@ export const sendCKBWithSubkeyUnlock = async (
     depType: 'code',
   }
 
-  const {inputs, capacity: inputCapacity} = servicer.collector.collectInputs(cells, amount, FEE)
+  const { inputs, capacity: inputCapacity } = servicer.collector.collectInputs(cells, amount, FEE)
 
   const toLock = addressToScript(to)
   let outputs: CKBComponents.CellOutput[] = [
@@ -53,7 +53,7 @@ export const sendCKBWithSubkeyUnlock = async (
 
   const { unlockEntry } = await servicer.aggregator.generateSubkeyUnlockSmt(req)
 
-   const rawTx: any = {
+  const rawTx: any = {
     version: '0x0',
     cellDeps,
     headerDeps: [],
@@ -62,7 +62,9 @@ export const sendCKBWithSubkeyUnlock = async (
     outputsData: ['0x', '0x'],
     witnesses: [],
   }
-  rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: append0x(unlockEntry) }))
+  rawTx.witnesses = rawTx.inputs.map((_, i) =>
+    i > 0 ? '0x' : { lock: '', inputType: '', outputType: append0x(unlockEntry) },
+  )
 
   const key = keyFromPrivate(subPrivateKey)
   const signedTx = signTransaction(key, rawTx, WITNESS_SUBKEY_MODE)
@@ -70,6 +72,6 @@ export const sendCKBWithSubkeyUnlock = async (
 
   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`sendCKBWithSubkeyUnlock tx has been sent with tx hash ${txHash}`)
-  
+
   return txHash
 }

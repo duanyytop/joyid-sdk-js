@@ -1,18 +1,11 @@
 import axios from 'axios'
 import { toCamelcase, toSnakeCase } from '../utils/case-parser'
-import {
-  BaseReq,
-  ExtSubkeyReq,
-  BaseResp,
-  ExtSubkeyResp,
-  SubkeyUnlockReq,
-  SubkeyUnlockResp,
-} from '../types/joyid'
+import { BaseReq, ExtSubkeyReq, BaseResp, ExtSubkeyResp, SubkeyUnlockReq, SubkeyUnlockResp } from '../types/joyid'
 
 export class Aggregator {
   private url: string
 
-  constructor(url: string ) {
+  constructor(url: string) {
     this.url = url
   }
 
@@ -47,7 +40,6 @@ export class Aggregator {
     }
   }
 
-
   async generateExtSubkeySmt(extension: ExtSubkeyReq): Promise<ExtSubkeyResp> {
     return (await this.baseRPC('generate_extension_subkey_smt', extension)) as Promise<ExtSubkeyResp>
   }
@@ -56,7 +48,5 @@ export class Aggregator {
     return (await this.baseRPC('generate_subkey_unlock_smt', extension)) as Promise<SubkeyUnlockResp>
   }
 }
-
-
 
 const payloadId = () => Date.now()

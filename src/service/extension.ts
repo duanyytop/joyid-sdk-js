@@ -7,17 +7,17 @@ import { keyFromPrivate } from '../utils'
 
 enum Action {
   Add,
-  Update
+  Update,
 }
 
 const execExtensionSubkey = async (
-  servicer: Servicer, 
-  fromPrivateKey: Hex, 
+  servicer: Servicer,
+  fromPrivateKey: Hex,
   from: Address,
   subkeys: ExtSubKey[],
   action: Action,
 ) => {
-  const isMainnet = from.startsWith("ckb")
+  const isMainnet = from.startsWith('ckb')
   let cotaLock = addressToScript(from)
   const cotaType = getCotaTypeScript(isMainnet)
   const cotaCells = await servicer.collector.getCells(cotaLock, cotaType)
@@ -43,7 +43,7 @@ const execExtensionSubkey = async (
     }
   })
 
-  const extAction = action == Action.Add ? 0xF0.toString() : 0xF1.toString()
+  const extAction = action == Action.Add ? (0xf0).toString() : (0xf1).toString()
   const extSubkeyReq: ExtSubkeyReq = {
     lockScript: serializeScript(cotaLock),
     extAction,
@@ -79,18 +79,16 @@ const execExtensionSubkey = async (
   return txHash
 }
 
-
 export const addExtensionSubkey = async (
-  servicer: Servicer, 
-  fromPrivateKey: Hex, 
+  servicer: Servicer,
+  fromPrivateKey: Hex,
   from: Address,
   subkeys: ExtSubKey[],
 ) => await execExtensionSubkey(servicer, fromPrivateKey, from, subkeys, Action.Add)
 
-
 export const updateExtensionSubkey = async (
-  servicer: Servicer, 
-  fromPrivateKey: Hex, 
+  servicer: Servicer,
+  fromPrivateKey: Hex,
   from: Address,
   subkeys: ExtSubKey[],
 ) => await execExtensionSubkey(servicer, fromPrivateKey, from, subkeys, Action.Update)

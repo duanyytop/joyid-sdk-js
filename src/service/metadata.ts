@@ -23,7 +23,7 @@ const generateJoyIDMetadata = (joyIDInfo: JoyIDInfo): Hex => {
 
 export const generateJoyIDInfoTx = async (
   collector: Collector,
-  fromPrivateKey: Hex, 
+  fromPrivateKey: Hex,
   cotaAddress: string,
   joyIDInfo: JoyIDInfo,
   fee = FEE,
@@ -64,7 +64,7 @@ export const generateJoyIDInfoTx = async (
   const key = keyFromPrivate(fromPrivateKey)
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
-  
+
   let txHash = await collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Update joyId metadata tx has been sent with tx hash ${txHash}`)
   return txHash
