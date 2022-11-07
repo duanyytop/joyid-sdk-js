@@ -23,14 +23,14 @@ const generateJoyIDMetadata = (joyIDInfo: JoyIDInfo): Hex => {
 
 export const generateJoyIDInfoTx = async (
   collector: Collector,
-  fromPrivateKey: Hex,
-  cotaAddress: string,
+  mainPrivateKey: Hex,
+  address: string,
   joyIDInfo: JoyIDInfo,
   fee = FEE,
   isMainnet = false,
 ) => {
   const cotaType = getCotaTypeScript(isMainnet)
-  const cotaLock = addressToScript(cotaAddress)
+  const cotaLock = addressToScript(address)
   const cotaCells = await collector.getCells(cotaLock, cotaType)
   if (!cotaCells || cotaCells.length === 0) {
     throw new Error("Cota cell doesn't exist")
@@ -61,7 +61,7 @@ export const generateJoyIDInfoTx = async (
     i > 0 ? '0x' : { lock: '', inputType: '', outputType: generateJoyIDMetadata(joyIDInfo) },
   )
 
-  const key = keyFromPrivate(fromPrivateKey)
+  const key = keyFromPrivate(mainPrivateKey)
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
 

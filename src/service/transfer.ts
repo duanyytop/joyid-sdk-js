@@ -7,7 +7,7 @@ import { keyFromPrivate } from '../utils'
 
 export const sendCKBFromP256Lock = async (
   collector: Collector,
-  fromPrivateKey: Hex,
+  mainPrivateKey: Hex,
   from: Address,
   to: Address,
   amount: Capacity,
@@ -45,7 +45,7 @@ export const sendCKBFromP256Lock = async (
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: '' }))
 
-  const key = keyFromPrivate(fromPrivateKey)
+  const key = keyFromPrivate(mainPrivateKey)
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
