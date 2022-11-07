@@ -13,7 +13,7 @@ import { append0x, getPublicKey, remove0x } from '../utils'
 import { Hex } from '../types'
 import { MODE_PUBKEY_SIG_LEN, WITNESS_NATIVE_MODE } from '../constants'
 
-export const signTransaction = (key: EC.KeyPair, transaction: CKBComponents.RawTransactionToSign): CKBComponents.RawTransaction => {
+export const signTransaction = (key: EC.KeyPair, transaction: CKBComponents.RawTransactionToSign, mode = WITNESS_NATIVE_MODE): CKBComponents.RawTransaction => {
   if (!key) throw new Error('Private key or address object')
 
   const witnessGroup = transaction.witnesses
@@ -47,7 +47,7 @@ export const signTransaction = (key: EC.KeyPair, transaction: CKBComponents.RawT
   })
 
   const message = `${hash.digest('hex')}`
-  const mode = WITNESS_NATIVE_MODE
+  console.log("sighash_all", message)
   const pubKey = getPublicKey(key)
 
   const authData ="49960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d97630162f9fb77"
@@ -56,6 +56,9 @@ export const signTransaction = (key: EC.KeyPair, transaction: CKBComponents.RawT
   const clientDataHash = sha256Hash(clientData);
   const signData = `0x${authData}${clientDataHash}`
   const signature = signMessage(key, signData)
+
+  console.log("signature", signature)
+  console.log("clientData", clientData)
 
   emptyWitness.lock = `0x${mode}${pubKey}${signature}${authData}${clientData}`
 

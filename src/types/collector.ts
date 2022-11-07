@@ -1,4 +1,6 @@
 import { Hex } from '.'
+import { Aggregator } from '../aggregator'
+import { Collector } from '../collector'
 
 export interface IndexerCell {
   blockNumber: CKBComponents.BlockNumber
@@ -11,4 +13,9 @@ export interface IndexerCell {
 export interface CollectResult {
   inputs: CKBComponents.CellInput[]
   capacity: bigint
+}
+
+export interface Service {
+  collector: Collector
+  aggregator: Aggregator
 }
