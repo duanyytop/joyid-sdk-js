@@ -23,6 +23,16 @@ export interface ExtSubkeyResp extends BaseResp {
     blockNumber: bigint
 }
 
+export interface SubkeyUnlockReq extends BaseReq {
+    lockScript: Bytes,
+    pubkey_hash: Hex,
+}
+
+export interface SubkeyUnlockResp extends BaseResp {
+    unlockEntry: Bytes
+    blockNumber: bigint
+}
+
 export interface Servicer {
     collector: Collector
     aggregator: Aggregator

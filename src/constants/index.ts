@@ -1,6 +1,8 @@
 export const FEE = BigInt(6000)
 export const MIN_CAPACITY = BigInt(62) * BigInt(100000000)
 export const WITNESS_NATIVE_MODE = "01"
+export const WITNESS_SUBKEY_MODE = "02"
+export const WITNESS_SOCIAL_MODE = "03"
 export const MODE_PUBKEY_SIG_LEN = (1 + 64 + 64) * 2
 
 const TestnetInfo = {
