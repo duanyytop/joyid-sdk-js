@@ -23,8 +23,8 @@ const run = async () => {
   const subkeyAddress = addressFromPrivateKey(subkeyPrivateKey)
   console.log('subkey address: ', subkeyAddress)
   const subkeys: ExtSubKey[] = [{
-    ext_data: "1",
-    alg_index: "1",
+    ext_data: 1,
+    alg_index: 1,
     pubkey_hash: append0x(blake160(subkeyPubkey, 'hex'))
   }]
   await addExtensionSubkey(servicer, FROM_PRIVATE_KEY, fromAddress, subkeys)

@@ -35,10 +35,19 @@ const execExtensionSubkey = async (
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
+  const subkeyBuf = subkeys.map((subkey: ExtSubKey) => {
+    return {
+      ...subkey,
+      ext_data: subkey.ext_data.toString(),
+      alg_index: subkey.alg_index.toString(),
+    }
+  })
+
+  const extAction = action == Action.Add ? 0xF0.toString() : 0xF1.toString()
   const extSubkeyReq: ExtSubkeyReq = {
     lockScript: serializeScript(cotaLock),
-    extAction: action == Action.Add ? 0xF0.toString() : 0xF1.toString(),
-    subkeys,
+    extAction,
+    subkeys: subkeyBuf,
   }
 
   const { smtRootHash, extensionSmtEntry } = await servicer.aggregator.generateExtSubkeySmt(extSubkeyReq)
