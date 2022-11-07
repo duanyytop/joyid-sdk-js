@@ -1,9 +1,9 @@
-import { addressToScript, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
-import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep } from '../constants'
+import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
+import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep, WITNESS_SUBKEY_MODE } from '../constants'
 import { signTransaction } from '../signature'
 import { Address, ExtSubkeyReq, Hex } from '../types'
-import { ExtSubKey, Servicer } from '../types/joyid'
-import { keyFromPrivate } from '../utils'
+import { ExtSubKey, Servicer, SubkeyUnlockReq } from '../types/joyid'
+import { append0x, keyFromPrivate, pubkeyFromPrivateKey } from '../utils'
 
 enum Action {
   Add,
@@ -12,13 +12,13 @@ enum Action {
 
 const execExtensionSubkey = async (
   servicer: Servicer,
-  fromPrivateKey: Hex,
-  from: Address,
+  mainPrivateKey: Hex,
+  address: Address,
   subkeys: ExtSubKey[],
   action: Action,
 ) => {
-  const isMainnet = from.startsWith('ckb')
-  let cotaLock = addressToScript(from)
+  const isMainnet = address.startsWith('ckb')
+  let cotaLock = addressToScript(address)
   const cotaType = getCotaTypeScript(isMainnet)
   const cotaCells = await servicer.collector.getCells(cotaLock, cotaType)
   if (!cotaCells || cotaCells.length === 0) {
@@ -70,7 +70,7 @@ const execExtensionSubkey = async (
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `${prefix}${extensionSmtEntry}`, outputType: '' },
   )
-  const key = keyFromPrivate(fromPrivateKey)
+  const key = keyFromPrivate(mainPrivateKey)
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
@@ -81,14 +81,93 @@ const execExtensionSubkey = async (
 
 export const addExtensionSubkey = async (
   servicer: Servicer,
-  fromPrivateKey: Hex,
+  mainPrivateKey: Hex,
   from: Address,
   subkeys: ExtSubKey[],
-) => await execExtensionSubkey(servicer, fromPrivateKey, from, subkeys, Action.Add)
+) => await execExtensionSubkey(servicer, mainPrivateKey, from, subkeys, Action.Add)
 
 export const updateExtensionSubkey = async (
   servicer: Servicer,
-  fromPrivateKey: Hex,
-  from: Address,
+  mainPrivateKey: Hex,
+  address: Address,
   subkeys: ExtSubKey[],
-) => await execExtensionSubkey(servicer, fromPrivateKey, from, subkeys, Action.Update)
+) => await execExtensionSubkey(servicer, mainPrivateKey, address, subkeys, Action.Update)
+
+
+export const updateSubkeyUnlockWithSubkey = async (
+  servicer: Servicer,
+  subPrivateKey: Hex,
+  address: Address,
+  subkeys: ExtSubKey[],
+) => {
+  const isMainnet = address.startsWith('ckb')
+  let joyidLock = addressToScript(address)
+  const cotaType = getCotaTypeScript(isMainnet)
+  const cotaCells = await servicer.collector.getCells(joyidLock, cotaType)
+  if (!cotaCells || cotaCells.length === 0) {
+    throw new Error("Cota cell doesn't exist")
+  }
+  const cotaCell = cotaCells[0]
+  const joyidCotaCellDep: CKBComponents.CellDep = {
+    outPoint: cotaCell.outPoint,
+    depType: 'code',
+  }
+  const inputs = [
+    {
+      previousOutput: cotaCell.outPoint,
+      since: '0x0',
+    },
+  ]
+
+  const outputs = [cotaCell.output]
+  outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
+
+  const subkeyBuf = subkeys.map((subkey: ExtSubKey) => {
+    return {
+      ...subkey,
+      ext_data: subkey.ext_data.toString(),
+      alg_index: subkey.alg_index.toString(),
+    }
+  })
+
+  const extSubkeyReq: ExtSubkeyReq = {
+    lockScript: serializeScript(joyidLock),
+    extAction: (0xf1).toString(),
+    subkeys: subkeyBuf,
+  }
+
+  const { smtRootHash, extensionSmtEntry } = await servicer.aggregator.generateExtSubkeySmt(extSubkeyReq)
+  const cotaCellData = `0x02${smtRootHash}`
+
+  const outputsData = [cotaCellData]
+  const cellDeps = [joyidCotaCellDep, getCotaCellDep(isMainnet), getJoyIDCellDep(isMainnet)]
+
+  const subPubkey = pubkeyFromPrivateKey(subPrivateKey)
+  const req: SubkeyUnlockReq = {
+    lockScript: serializeScript(joyidLock),
+    pubkey_hash: append0x(blake160(subPubkey, 'hex')),
+  }
+
+  const { unlockEntry } = await servicer.aggregator.generateSubkeyUnlockSmt(req)
+
+  const rawTx = {
+    version: '0x0',
+    cellDeps,
+    headerDeps: [],
+    inputs,
+    outputs,
+    outputsData,
+    witnesses: [],
+  } as any
+
+  rawTx.witnesses = rawTx.inputs.map((_, i) =>
+    i > 0 ? '0x' : { lock: '', inputType: `0xF1${extensionSmtEntry}`, outputType: append0x(unlockEntry) },
+  )
+  const key = keyFromPrivate(subPrivateKey)
+  const signedTx = signTransaction(key, rawTx, WITNESS_SUBKEY_MODE)
+  console.info(JSON.stringify(signedTx))
+
+  let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
+  console.info(`Update subkey with subkey unlock tx has been sent with tx hash ${txHash}`)
+  return txHash
+}
