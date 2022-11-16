@@ -51,11 +51,15 @@ export const signTransaction = (
   })
 
   const message = `${hash.digest('hex')}`
-  console.log('sighash_all', message)
+  console.log('message', message)
+  
+  const base64 = Buffer.from(message).toString('base64url')
+  const sighashAll = Buffer.from(base64, 'utf8').toString('hex')
+  
   const pubKey = getPublicKey(key)
 
   const authData = '49960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d97630162f9fb77'
-  const clientData = `7b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a22${message}222c226f726967696e223a22687474703a2f2f6c6f63616c686f73743a38303030222c2263726f73734f726967696e223a66616c73657d`
+  const clientData = `7b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a22${sighashAll}222c226f726967696e223a22687474703a2f2f6c6f63616c686f73743a38303030222c2263726f73734f726967696e223a66616c73657d`
 
   const clientDataHash = sha256Hash(clientData)
   const signData = `0x${authData}${clientDataHash}`

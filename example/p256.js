@@ -26,3 +26,8 @@ console.log('signature', derSign)
 // Verify signature
 console.log('verify signature', key.verify(msgHash, derSign));
 
+const message = '57975bc34ea17ab238a56f2acd412f9a2d92b5698ebe2f92814348d25dcb9cab'
+const base64 = Buffer.from(message).toString('base64url')
+console.log('base64', base64);
+const sighashAll = Buffer.from(base64, 'utf8').toString('hex')
+console.log('sighashAll', sighashAll);
