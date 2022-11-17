@@ -1,5 +1,5 @@
 import { addressFromPrivateKey, append0x, pubkeyFromPrivateKey } from '../src/utils'
-import {updateSubkeyUnlockWithSubkey} from '../src/service/extension'
+import {updateSubkeyUnlockWithSubkey} from '../src/service/ext-subkey'
 import { ExtSubKey } from '../src/types'
 import { blake160 } from '@nervosnetwork/ckb-sdk-utils'
 import { Aggregator } from '../src/aggregator'
@@ -23,9 +23,9 @@ const run = async () => {
   const newSubPubkey = pubkeyFromPrivateKey(newSubPrivateKey)
 
   const subkeys: ExtSubKey[] = [{
-    ext_data: 1,
-    alg_index: 1,
-    pubkey_hash: append0x(blake160(newSubPubkey, 'hex'))
+    extData: 1,
+    algIndex: 1,
+    pubkeyHash: append0x(blake160(newSubPubkey, 'hex'))
   }]
   await updateSubkeyUnlockWithSubkey(servicer, EXIST_SUB_PRIVATE_KEY, address, subkeys)
 }
