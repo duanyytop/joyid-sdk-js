@@ -1,4 +1,4 @@
 export * from './metadata'
 export * from './transfer'
-export * from './extension'
+export * from './ext-subkey'
 export * from './subkey'

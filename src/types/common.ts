@@ -1,5 +1,5 @@
 export type Hex = string
-export type Byte = string
+export type Byte = string | number
 export type Byte2 = string | number
 export type Byte4 = string | number
 export type Byte20 = string

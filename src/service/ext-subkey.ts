@@ -38,8 +38,8 @@ const execExtensionSubkey = async (
   const subkeyBuf = subkeys.map((subkey: ExtSubKey) => {
     return {
       ...subkey,
-      ext_data: subkey.ext_data.toString(),
-      alg_index: subkey.alg_index.toString(),
+      ext_data: subkey.extData.toString(),
+      alg_index: subkey.algIndex.toString(),
     }
   })
 
@@ -125,8 +125,8 @@ export const updateSubkeyUnlockWithSubkey = async (
   const subkeyBuf = subkeys.map((subkey: ExtSubKey) => {
     return {
       ...subkey,
-      ext_data: subkey.ext_data.toString(),
-      alg_index: subkey.alg_index.toString(),
+      ext_data: subkey.extData.toString(),
+      alg_index: subkey.algIndex.toString(),
     }
   })
 
@@ -145,7 +145,7 @@ export const updateSubkeyUnlockWithSubkey = async (
   const subPubkey = pubkeyFromPrivateKey(subPrivateKey)
   const req: SubkeyUnlockReq = {
     lockScript: serializeScript(joyidLock),
-    pubkey_hash: append0x(blake160(subPubkey, 'hex')),
+    pubkeyHash: append0x(blake160(subPubkey, 'hex')),
   }
 
   const { unlockEntry } = await servicer.aggregator.generateSubkeyUnlockSmt(req)

@@ -48,7 +48,7 @@ export const sendCKBWithSubkeyUnlock = async (
   const subPubkey = pubkeyFromPrivateKey(subPrivateKey)
   const req: SubkeyUnlockReq = {
     lockScript: serializeScript(fromLock),
-    pubkey_hash: append0x(blake160(subPubkey, 'hex')),
+    pubkeyHash: append0x(blake160(subPubkey, 'hex')),
   }
 
   const { unlockEntry } = await servicer.aggregator.generateSubkeyUnlockSmt(req)
