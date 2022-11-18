@@ -1,5 +1,5 @@
 import { addressFromPrivateKey } from '../src/utils'
-import { addExtensionSocial } from '../src/service/ext-social'
+import { addExtensionSocial, updateExtensionSocial } from '../src/service/ext-social'
 import { ExtSocial } from '../src/types'
 import { Aggregator } from '../src/aggregator'
 import { Collector } from '../src/collector'
@@ -17,6 +17,8 @@ const FRIEND2_PRIVATE_KEY = '0x00c0d02da53ebf3a26dfe5b17e09b5f107da19841aa3882e2
 const FRIEND3_PRIVATE_KEY = '0x6cb214ead13214df1c8ebdf14909152236430b8bb4271785994aeb1f32b92b04'
 // ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqygya2rhxguszwws30edsdwww39gr2t2e5hsqyuy
 
+const FRIEND4_PRIVATE_KEY = '0xd7d8106165aa18acf855fe3521d0c733ec6ad5afae2e1ff06687a0e790d02910'
+
 // unlock with native mode and add new social recovery config
 const run = async () => {
   const servicer = {
@@ -29,14 +31,15 @@ const run = async () => {
   const friend1 = serializeScript(addressToScript(addressFromPrivateKey(FRIEND1_PRIVATE_KEY)))
   const friend2 = serializeScript(addressToScript(addressFromPrivateKey(FRIEND2_PRIVATE_KEY)))
   const friend3 = serializeScript(addressToScript(addressFromPrivateKey(FRIEND3_PRIVATE_KEY)))
+  const friend4 = serializeScript(addressToScript(addressFromPrivateKey(FRIEND4_PRIVATE_KEY)))
 
   const social: ExtSocial = {
     recoveryMode: 0,
     must: 2,
-    total: 3,
-    signers: [friend1, friend2, friend3]
+    total: 4,
+    signers: [friend1, friend2, friend3, friend4]
   }
-  await addExtensionSocial(servicer, MAIN_PRIVATE_KEY, address, social)
+  await updateExtensionSocial(servicer, MAIN_PRIVATE_KEY, address, social)
 }
 
 run()
