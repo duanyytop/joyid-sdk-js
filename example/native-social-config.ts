@@ -22,8 +22,11 @@ const FRIEND4_PRIVATE_KEY = '0xd7d8106165aa18acf855fe3521d0c733ec6ad5afae2e1ff06
 // unlock with native mode and add new social recovery config
 const run = async () => {
   const servicer = {
-    collector: new Collector({ ckbNodeUrl: 'https://testnet.ckb.dev/rpc', ckbIndexerUrl: 'https://testnet.ckb.dev/indexer' }), 
-    aggregator: new Aggregator("http://127.0.0.1:3030")
+    collector: new Collector({
+      ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
+      ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
+    }),
+    aggregator: new Aggregator('http://127.0.0.1:3030'),
   }
 
   const address = addressFromPrivateKey(MAIN_PRIVATE_KEY)
@@ -37,7 +40,7 @@ const run = async () => {
     recoveryMode: 0,
     must: 2,
     total: 4,
-    signers: [friend1, friend2, friend3, friend4]
+    signers: [friend1, friend2, friend3, friend4],
   }
   await updateExtensionSocial(servicer, MAIN_PRIVATE_KEY, address, social)
 }

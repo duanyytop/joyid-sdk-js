@@ -14,8 +14,11 @@ const TO_ADDRESS = 'ckt1qyq897k5m53wxzup078jwkucvvsu8kzv55rqqm6glm'
 // unlock with subkey and transfer ckb to another address
 const run = async () => {
   const servicer = {
-    collector: new Collector({ ckbNodeUrl: 'https://testnet.ckb.dev/rpc', ckbIndexerUrl: 'https://testnet.ckb.dev/indexer' }), 
-    aggregator: new Aggregator("http://127.0.0.1:3030")
+    collector: new Collector({
+      ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
+      ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
+    }),
+    aggregator: new Aggregator('http://127.0.0.1:3030'),
   }
   const fromAddress = addressFromPrivateKey(MAIN_PRIVATE_KEY)
   console.log('from address: ', fromAddress)
