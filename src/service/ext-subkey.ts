@@ -5,7 +5,7 @@ import { Address, ExtSubkeyReq, Hex } from '../types'
 import { ExtSubKey, Servicer, SubkeyUnlockReq } from '../types/joyid'
 import { append0x, keyFromPrivate, pubkeyFromPrivateKey } from '../utils'
 
-enum Action {
+export enum Action {
   Add,
   Update,
 }
@@ -92,7 +92,6 @@ export const updateExtensionSubkey = async (
   address: Address,
   subkeys: ExtSubKey[],
 ) => await execExtensionSubkey(servicer, mainPrivateKey, address, subkeys, Action.Update)
-
 
 export const updateSubkeyUnlockWithSubkey = async (
   servicer: Servicer,

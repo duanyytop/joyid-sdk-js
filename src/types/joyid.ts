@@ -1,6 +1,6 @@
 import { Aggregator } from '../aggregator'
 import { Collector } from '../collector'
-import { Bytes, Hex, Byte32, Byte4, Byte2, Byte } from './common'
+import { Bytes, Hex, Byte32, Byte4, Byte2, Byte, Address } from './common'
 
 export interface ExtSubKey {
   extData: Byte4
@@ -52,6 +52,26 @@ export interface ExtSocialReq extends BaseReq {
 export interface ExtSocialResp extends BaseResp {
   smtRootHash: Byte32
   extensionSmtEntry: Bytes
+  blockNumber: bigint
+}
+
+export interface SocialFriend {
+  lockScript: Hex
+  pubkey: Hex
+  signature?: Hex
+  unlockMode: Byte
+  algIndex: Byte2
+  privateKey?: Hex
+  address?: Address
+}
+
+export interface SocialUnlockReq extends BaseReq {
+  lockScript: Bytes
+  friends: SocialFriend[]
+}
+
+export interface SocialUnlockResp extends BaseResp {
+  unlockEntry: Bytes
   blockNumber: bigint
 }
 

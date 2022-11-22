@@ -74,12 +74,8 @@ const execExtensionSocial = async (
   return txHash
 }
 
-export const addExtensionSocial = async (
-  servicer: Servicer,
-  mainPrivateKey: Hex,
-  from: Address,
-  social: ExtSocial,
-) => await execExtensionSocial(servicer, mainPrivateKey, from, social, Action.Add)
+export const addExtensionSocial = async (servicer: Servicer, mainPrivateKey: Hex, from: Address, social: ExtSocial) =>
+  await execExtensionSocial(servicer, mainPrivateKey, from, social, Action.Add)
 
 export const updateExtensionSocial = async (
   servicer: Servicer,
@@ -87,4 +83,3 @@ export const updateExtensionSocial = async (
   address: Address,
   social: ExtSocial,
 ) => await execExtensionSocial(servicer, mainPrivateKey, address, social, Action.Update)
-
