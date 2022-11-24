@@ -102,8 +102,11 @@ export const socialUnlockTx = async (
   const signedTx = await signSocialTx(servicer, keys, socialMsg, socialUnlockReq, rawTx)
   console.info(JSON.stringify(signedTx))
 
-  let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
-  console.info(`Social recovery unlock tx has been sent with tx hash ${txHash}`)
+  let cycles = await servicer.collector.getCkb().rpc.dryRunTransaction(signedTx)
+  console.info(`Cycles: ${JSON.stringify(cycles)}`)
 
-  return txHash
+//   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
+//   console.info(`Social recovery unlock tx has been sent with tx hash ${txHash}`)
+
+//   return txHash
 }

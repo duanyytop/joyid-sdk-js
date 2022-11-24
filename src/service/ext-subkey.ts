@@ -35,19 +35,11 @@ const execExtensionSubkey = async (
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
-  const subkeyBuf = subkeys.map((subkey: ExtSubKey) => {
-    return {
-      ...subkey,
-      ext_data: subkey.extData.toString(),
-      alg_index: subkey.algIndex.toString(),
-    }
-  })
-
-  const extAction = action == Action.Add ? (0xf0).toString() : (0xf1).toString()
+  const extAction = action == Action.Add ? 0xF0 : 0xF1
   const extSubkeyReq: ExtSubkeyReq = {
     lockScript: serializeScript(cotaLock),
     extAction,
-    subkeys: subkeyBuf,
+    subkeys,
   }
 
   const { smtRootHash, extensionSmtEntry } = await servicer.aggregator.generateExtSubkeySmt(extSubkeyReq)
@@ -74,9 +66,9 @@ const execExtensionSubkey = async (
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
-  let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
-  console.info(`Extension subkey tx has been sent with tx hash ${txHash}`)
-  return txHash
+  // let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
+  // console.info(`Extension subkey tx has been sent with tx hash ${txHash}`)
+  // return txHash
 }
 
 export const addExtensionSubkey = async (
@@ -121,18 +113,10 @@ export const updateSubkeyUnlockWithSubkey = async (
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
-  const subkeyBuf = subkeys.map((subkey: ExtSubKey) => {
-    return {
-      ...subkey,
-      ext_data: subkey.extData.toString(),
-      alg_index: subkey.algIndex.toString(),
-    }
-  })
-
   const extSubkeyReq: ExtSubkeyReq = {
     lockScript: serializeScript(joyidLock),
-    extAction: (0xf1).toString(),
-    subkeys: subkeyBuf,
+    extAction: 0xF1,
+    subkeys,
   }
 
   const { smtRootHash, extensionSmtEntry } = await servicer.aggregator.generateExtSubkeySmt(extSubkeyReq)

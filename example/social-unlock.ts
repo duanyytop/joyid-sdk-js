@@ -65,7 +65,7 @@ const run = async () => {
   ]
 
   const subkey: ExtSubKey = {
-    extData: 2,
+    extData: 3,
     algIndex: 1,
     pubkeyHash: append0x(blake160(newSubPubkey, 'hex')),
   }

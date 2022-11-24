@@ -164,8 +164,8 @@ export const signSocialTx = async (
         lockScript: friend.lockScript,
         pubkey: friend.pubkey,
         signature: signMessage(keys[index], signData),
-        unlockMode: friend.unlockMode.toString(),
-        algIndex: friend.algIndex.toString(),
+        unlockMode: friend.unlockMode,
+        algIndex: friend.algIndex,
       }
     }),
   }

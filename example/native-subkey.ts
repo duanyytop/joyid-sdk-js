@@ -25,7 +25,7 @@ const run = async () => {
 
   const subkeys: ExtSubKey[] = [
     {
-      extData: 1,
+      extData: 2,
       algIndex: 1,
       pubkeyHash: append0x(blake160(subkeyPubkey, 'hex')),
     },

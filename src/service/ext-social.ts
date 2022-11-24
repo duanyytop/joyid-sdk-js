@@ -35,13 +35,13 @@ const execExtensionSocial = async (
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
-  const extAction = action == Action.Add ? (0xf0).toString() : (0xf1).toString()
+  const extAction = action == Action.Add ? 0xF0 : 0xF1
   const extSocialReq: ExtSocialReq = {
     lockScript: serializeScript(cotaLock),
     extAction,
-    recoveryMode: social.recoveryMode.toString(),
-    must: social.must.toString(),
-    total: social.total.toString(),
+    recoveryMode: social.recoveryMode,
+    must: social.must,
+    total: social.total,
     signers: social.signers,
   }
 
@@ -69,9 +69,9 @@ const execExtensionSocial = async (
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
-  let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
-  console.info(`Extension social tx has been sent with tx hash ${txHash}`)
-  return txHash
+  // let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
+  // console.info(`Extension social tx has been sent with tx hash ${txHash}`)
+  // return txHash
 }
 
 export const addExtensionSocial = async (servicer: Servicer, mainPrivateKey: Hex, from: Address, social: ExtSocial) =>
