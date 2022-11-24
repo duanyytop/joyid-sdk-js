@@ -65,16 +65,10 @@ export const socialUnlockTx = async (
   const outputs = [ownerCotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - fee).toString(16)}`
 
-  const newSubkey = {
-    ...subkey,
-    extData: subkey.extData.toString(),
-    algIndex: subkey.algIndex.toString(),
-  }
-
   const extSubkeyReq: ExtSubkeyReq = {
     lockScript: serializeScript(ownerLock),
-    extAction: (0xf0).toString(),
-    subkeys: [newSubkey],
+    extAction: 0xf0,
+    subkeys: [subkey],
   }
 
   const { smtRootHash, extensionSmtEntry } = await servicer.aggregator.generateExtSubkeySmt(extSubkeyReq)
