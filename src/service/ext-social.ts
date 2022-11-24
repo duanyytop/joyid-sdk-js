@@ -69,9 +69,9 @@ const execExtensionSocial = async (
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
-  // let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
-  // console.info(`Extension social tx has been sent with tx hash ${txHash}`)
-  // return txHash
+  let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
+  console.info(`Extension social tx has been sent with tx hash ${txHash}`)
+  return txHash
 }
 
 export const addExtensionSocial = async (servicer: Servicer, mainPrivateKey: Hex, from: Address, social: ExtSocial) =>

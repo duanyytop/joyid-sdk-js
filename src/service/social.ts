@@ -107,8 +107,8 @@ export const socialUnlockTx = async (
   let cycles = await servicer.collector.getCkb().rpc.dryRunTransaction(signedTx)
   console.info(`Cycles: ${JSON.stringify(cycles)}`)
 
-  //   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
-  //   console.info(`Social recovery unlock tx has been sent with tx hash ${txHash}`)
+  let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
+  console.info(`Social recovery unlock tx has been sent with tx hash ${txHash}`)
 
-  //   return txHash
+  return txHash
 }
