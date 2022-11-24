@@ -35,7 +35,7 @@ const execExtensionSocial = async (
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
-  const extAction = action == Action.Add ? 0xF0 : 0xF1
+  const extAction = action == Action.Add ? 0xf0 : 0xf1
   const extSocialReq: ExtSocialReq = {
     lockScript: serializeScript(cotaLock),
     extAction,
