@@ -1,9 +1,9 @@
 import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep, WITNESS_SUBKEY_MODE } from '../constants'
 import { signTransaction } from '../signature'
-import { Address, ExtSubkeyReq, Hex } from '../types'
+import { Address, ExtSubkeyReq, Hex, JoyIDInfo } from '../types'
 import { ExtSubKey, Servicer, SubkeyUnlockReq } from '../types/joyid'
-import { append0x, keyFromPrivate, pubkeyFromPrivateKey } from '../utils'
+import { append0x, keyFromPrivate, pubkeyFromPrivateKey, utf8ToHex } from '../utils'
 
 export enum Action {
   Add,
@@ -66,9 +66,9 @@ const execExtensionSubkey = async (
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
-  // let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
-  // console.info(`Extension subkey tx has been sent with tx hash ${txHash}`)
-  // return txHash
+  let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
+  console.info(`Extension subkey tx has been sent with tx hash ${txHash}`)
+  return txHash
 }
 
 export const addExtensionSubkey = async (
@@ -90,6 +90,7 @@ export const updateSubkeyUnlockWithSubkey = async (
   subPrivateKey: Hex,
   address: Address,
   subkeys: ExtSubKey[],
+  joyId?: JoyIDInfo,
 ) => {
   const isMainnet = address.startsWith('ckb')
   let joyidLock = addressToScript(address)
@@ -146,6 +147,9 @@ export const updateSubkeyUnlockWithSubkey = async (
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `0xF1${extensionSmtEntry}`, outputType: append0x(unlockEntry) },
   )
+  if (joyId) {
+    rawTx.witnesses.push(generateJoyIDMetadata(joyId))
+  }
   const key = keyFromPrivate(subPrivateKey)
   const signedTx = signTransaction(key, rawTx, WITNESS_SUBKEY_MODE)
   console.info(JSON.stringify(signedTx))
@@ -154,3 +158,20 @@ export const updateSubkeyUnlockWithSubkey = async (
   console.info(`Update subkey with subkey unlock tx has been sent with tx hash ${txHash}`)
   return txHash
 }
+
+const generateJoyIDMetadata = (joyIDInfo: JoyIDInfo): Hex => {
+  const joyIDMeta = {
+    id: 'CTMeta',
+    ver: '1.0',
+    metadata: {
+      target: 'output#0',
+      type: 'joy_id',
+      data: {
+        version: '0',
+        ...joyIDInfo,
+      },
+    },
+  }
+  return append0x(utf8ToHex(JSON.stringify(joyIDMeta)))
+}
+
