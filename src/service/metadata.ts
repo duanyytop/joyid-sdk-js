@@ -1,6 +1,6 @@
 import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep } from '../constants'
 import { Hex, JoyIDInfo } from '../types'
-import { append0x, keyFromPrivate, utf8ToHex } from '../utils'
+import { append0x, keyFromPrivate, toSnakeCase, utf8ToHex } from '../utils'
 import { addressToScript } from '@nervosnetwork/ckb-sdk-utils'
 import { Collector } from '../collector'
 import { signTransaction } from '../signature'
@@ -14,7 +14,7 @@ const generateJoyIDMetadata = (joyIDInfo: JoyIDInfo): Hex => {
       type: 'joy_id',
       data: {
         version: '0',
-        ...joyIDInfo,
+        ...toSnakeCase(joyIDInfo),
       },
     },
   }

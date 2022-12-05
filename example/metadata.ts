@@ -2,8 +2,8 @@ import { Collector } from '../src'
 import { FEE, JoyIDInfo } from '../src'
 import { generateJoyIDInfoTx } from '../src/service'
 
-const FROM_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906260f1f657761'
-const FROM_ADDRESS = 'ckt1q3excgzey7lepv7per00j7fn8edqf78c9c2cu234mm595e6s6wx0zqdwwhnxdxd504kp0r2a9q4wa90n8sys2lse0p2jy'
+const FROM_PRIVATE_KEY = '0xc5a991867f2406bfe6d17028bcc09492b4959ec55ef5812e5f5cf12b3529f7af'
+const FROM_ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqy4amdm2f533gyrre3vuv4styyt7rlln3sxvqp4s'
 
 const run = async () => {
   const collector = new Collector({
@@ -26,12 +26,14 @@ const run = async () => {
           '0x650e48cf029c8a04788c02d7d88bad7b62918714137d0cd486b5b3aff53d0c2baecabd8d23107933f85fdf13cd814a0ba3d1848329b0504d7134a88962e9bde3',
         credentialId: '0x459d12c09a65e58e22a9d8d6fa843c3d',
         alg: '0x01',
+        frontEnd: 'https:://app.joy.id',
       },
       {
         pubKey:
           '0x290e48cf029c8a04788c02d7d88bad7b62918714137d0cd486b5b3aff53d0c2baecabd8d23107933f85fdf13cd814a0ba3d1848329b0504d7134a88962e9bde3',
         credentialId: '0x369d12c09a65e58e22a9d8d6fa843c3d',
         alg: '0x01',
+        frontEnd: 'https:://app.joy.id',
       },
     ],
   }

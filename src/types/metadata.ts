@@ -4,6 +4,7 @@ export interface SubKeyInfo {
   pubKey: Hex
   credentialId: Hex
   alg: Hex
+  frontEnd: string
 }
 
 export interface JoyIDInfo {

@@ -3,7 +3,7 @@ import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep, WITNESS_SUBKEY
 import { signTransaction } from '../signature'
 import { Address, ExtSubkeyReq, Hex, JoyIDInfo } from '../types'
 import { ExtSubKey, Servicer, SubkeyUnlockReq } from '../types/joyid'
-import { append0x, keyFromPrivate, pubkeyFromPrivateKey, utf8ToHex } from '../utils'
+import { append0x, keyFromPrivate, pubkeyFromPrivateKey, toSnakeCase, utf8ToHex } from '../utils'
 
 export enum Action {
   Add,
@@ -168,7 +168,7 @@ const generateJoyIDMetadata = (joyIDInfo: JoyIDInfo): Hex => {
       type: 'joy_id',
       data: {
         version: '0',
-        ...joyIDInfo,
+        ...toSnakeCase(joyIDInfo),
       },
     },
   }
