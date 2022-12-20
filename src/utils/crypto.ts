@@ -20,26 +20,15 @@ export const keyFromPrivate = (privateKey: Uint8Array | Hex, sigAlg = SigAlg.Sec
   return ec.keyFromPrivate(privkey)
 }
 
+// uncompressed pubkey without 0x
 export const getPublicKey = (key: EC.KeyPair) => key.getPublic(false, 'hex').substring(2)
-
-const lockFromPubKey = (pubKey: Hex, sigAlg = SigAlg.Secp256r1, isMainnet = false): CKBComponents.Script => {
-  if (sigAlg == SigAlg.Secp256k1) {
-    return {
-      ...getJoyIDLockScript(isMainnet),
-      args: `0x0002${keccak160(pubKey)}`,
-    }
-  } 
-  return {
-    ...getJoyIDLockScript(isMainnet),
-    args: `0x0001${blake160(hexToBytes(pubKey), 'hex')}`,
-  }
-}
 
 export const addressFromPrivateKey = (privateKey: Uint8Array | Hex, sigAlg = SigAlg.Secp256r1, isMainnet = false): Address => {
   const pubkey = append0x(getPublicKey(keyFromPrivate(privateKey, sigAlg)))
-  console.log(pubkey)
-  const lock = lockFromPubKey(pubkey, sigAlg, isMainnet)
-  console.log(lock)
+  const lock = {
+    ...getJoyIDLockScript(isMainnet),
+    args: sigAlg == SigAlg.Secp256r1 ? `0x0001${blake160(hexToBytes(pubkey), 'hex')}` : `0x0002${keccak160(pubkey)}`,
+  }
   return scriptToAddress(lock, isMainnet)
 }
 
