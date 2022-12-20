@@ -1,6 +1,6 @@
 import { addressToScript, serializeOutPoint, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaCellDep, getCotaTypeScript, getJoyIDCellDep } from '../constants'
-import { signSocialTx } from '../signature'
+import { signSocialTx } from '../signature/secp256r1'
 import { Address } from '../types'
 import { ExtSubKey, ExtSubkeyReq, Servicer, SocialFriend, SocialUnlockReq } from '../types/joyid'
 import { keyFromPrivate, remove0x, u16ToBe } from '../utils'

@@ -1,6 +1,6 @@
 import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep, WITNESS_SUBKEY_MODE } from '../constants'
-import { signTransaction } from '../signature'
+import { signTransaction } from '../signature/secp256r1'
 import { Address, ExtSubkeyReq, Hex, JoyIDInfo } from '../types'
 import { ExtSubKey, Servicer, SubkeyUnlockReq } from '../types/joyid'
 import { append0x, keyFromPrivate, pubkeyFromPrivateKey, toSnakeCase, utf8ToHex } from '../utils'

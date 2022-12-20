@@ -3,7 +3,7 @@ import { Hex, JoyIDInfo } from '../types'
 import { append0x, keyFromPrivate, toSnakeCase, utf8ToHex } from '../utils'
 import { addressToScript } from '@nervosnetwork/ckb-sdk-utils'
 import { Collector } from '../collector'
-import { signTransaction } from '../signature'
+import { signTransaction } from '../signature/secp256r1'
 
 const generateJoyIDMetadata = (joyIDInfo: JoyIDInfo): Hex => {
   const joyIDMeta = {

@@ -9,6 +9,7 @@ const MAIN_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906
 // const ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqxh8tenxnx686mqh34wjs2hwjhenczg90c3e06au'
 
 const EXIST_SUB_PRIVATE_KEY = '0x7b9d3f2f356ead86d5f04fc90e8096d706247027c349ac75357094459d8724b9'
+// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq8tv475fc6j26u67ghme8zea433ujf3ftqqhxzdc
 
 // unlock with subkey mode and update new subkey
 const run = async () => {
@@ -27,7 +28,7 @@ const run = async () => {
 
   const subkeys: ExtSubKey[] = [
     {
-      extData: 1,
+      extData: 3,
       algIndex: 1,
       pubkeyHash: append0x(blake160(newSubPubkey, 'hex')),
     },
