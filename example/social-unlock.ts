@@ -6,20 +6,22 @@ import { Collector } from '../src/collector'
 import { addressToScript, blake160, blake2b, scriptToHash, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 
 const MAIN_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906260f1f657761'
-// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqxh8tenxnx686mqh34wjs2hwjhenczg90c3e06au
+// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq9sfrkfah2cj79nyp7e6p283ualq8779rscnjmrj
+
 const MAIN_NEW_SUB_PRIVATE_KEY = '0xb1649d08186366204397fe4348cb3f70508fb33d6fd4eca6405c503ed83dd713'
 
 const FRIEND1_PRIVATE_KEY = '0xc5a991867f2406bfe6d17028bcc09492b4959ec55ef5812e5f5cf12b3529f7af'
-// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqy4amdm2f533gyrre3vuv4styyt7rlln3sxvqp4s
+// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq8250t2ye0eyy9nsvqd9v8vr4u2ykjda7qzkfwqs
 const FRIEND1_SUBKEY_PRIVATE_KEY = '0x7b9d3f2f356ead86d5f04fc90e8096d706247027c349ac75357094459d8724b9'
 
 const FRIEND2_PRIVATE_KEY = '0x00c0d02da53ebf3a26dfe5b17e09b5f107da19841aa3882e2a56cf84d4f22d1a'
-// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq8ll46ahjas4w050sf92y9suhwq22369qurt5duz
+// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqxwdy6ater88zs4lwve84mugnalk5dw9jq7zl9nt
 
 const FRIEND3_PRIVATE_KEY = '0x6cb214ead13214df1c8ebdf14909152236430b8bb4271785994aeb1f32b92b04'
-// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqygya2rhxguszwws30edsdwww39gr2t2e5hsqyuy
+// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq9u5cvdq4ac7wga7drf7p5d407vu0x64mulcptkx
 
 const FRIEND4_PRIVATE_KEY = '0xd7d8106165aa18acf855fe3521d0c733ec6ad5afae2e1ff06687a0e790d02910'
+//ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqx647vu0qp89npn9zvpwr33q5agwgfjr85svsmug
 
 // unlock with native mode and add new social recovery config
 const run = async () => {
@@ -63,7 +65,7 @@ const run = async () => {
   ]
 
   const subkey: ExtSubKey = {
-    extData: 3,
+    extData: 1,
     algIndex: 1,
     pubkeyHash: append0x(blake160(newSubPubkey, 'hex')),
   }

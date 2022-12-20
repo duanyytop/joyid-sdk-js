@@ -6,9 +6,10 @@ import { Aggregator } from '../src/aggregator'
 import { Collector } from '../src/collector'
 
 const MAIN_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906260f1f657761'
-// const ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqxh8tenxnx686mqh34wjs2hwjhenczg90c3e06au'
+// const ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq9sfrkfah2cj79nyp7e6p283ualq8779rscnjmrj'
 
 const EXIST_SUB_PRIVATE_KEY = '0x86f850ed0e871df5abb188355cd6fe00809063c6bdfd822f420f2d0a8a7c985d'
+// ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqxtqr7nemuyuq2dj6smff02mz64e3kv35vua0puz
 
 // unlock with subkey mode and update new subkey
 const run = async () => {
@@ -27,7 +28,7 @@ const run = async () => {
 
   const subkeys: ExtSubKey[] = [
     {
-      extData: 1,
+      extData: 3,
       algIndex: 1,
       pubkeyHash: append0x(blake160(newSubPubkey, 'hex')),
     },
