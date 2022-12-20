@@ -35,6 +35,13 @@ const run = async () => {
         alg: '0x01',
         frontEnd: 'https:://app.joy.id',
       },
+      {
+        pubKey:
+          '0x290e48cf029c8a04788c02d7d88bad7b62918714137d0cd486b5b3aff53d0c2baecabd8d23107933f85fdf13cd814a0ba3d1848329b0504d7134a88962e9bde3',
+        credentialId: '0x369d12c09a65e58e22a9d8d6fa843c3d',
+        alg: '0x01',
+        frontEnd: 'https:://app.joy.id',
+      },
     ],
   }
 

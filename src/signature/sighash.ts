@@ -7,7 +7,7 @@ import {
 } from '@nervosnetwork/ckb-sdk-utils'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
 import { Hex } from '../types'
-import { MODE_PUBKEY_SIG_LEN } from '../constants'
+import { SECP256R1_PUBKEY_SIG_LEN } from '../constants'
 
 export const sigHashAll = (transaction: CKBComponents.RawTransactionToSign): Hex => {
   const witnessGroup = transaction.witnesses
@@ -23,7 +23,7 @@ export const sigHashAll = (transaction: CKBComponents.RawTransactionToSign): Hex
 
   const emptyWitness = {
     ...witnessGroup[0],
-    lock: `0x${'0'.repeat(MODE_PUBKEY_SIG_LEN)}`,
+    lock: `0x${'0'.repeat(SECP256R1_PUBKEY_SIG_LEN)}`,
   }
 
   const serializedEmptyWitnessBytes = hexToBytes(serializeWitnessArgs(emptyWitness))
