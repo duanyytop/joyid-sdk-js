@@ -4,7 +4,7 @@ import { FEE, getJoyIDCellDep } from '../constants'
 import { signSecp256k1Tx } from '../signature/secp256k1'
 import { signTransaction } from '../signature/secp256r1'
 import { Address, Capacity, Hex } from '../types'
-import { keyFromPrivate } from '../utils'
+import { keyFromPrivate, SigAlg } from '../utils'
 
 export const sendCKBFromP256Lock = async (
   collector: Collector,
@@ -46,7 +46,7 @@ export const sendCKBFromP256Lock = async (
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: '' }))
 
-  const key = keyFromPrivate(mainPrivateKey)
+  const key = keyFromPrivate(mainPrivateKey, SigAlg.Secp256r1)
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
@@ -96,7 +96,8 @@ export const sendCKBFromEthK1Lock = async (
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: '' }))
 
-  const signedTx = signSecp256k1Tx(mainPrivateKey, rawTx)
+  const key = keyFromPrivate(mainPrivateKey, SigAlg.Secp256k1)
+  const signedTx = signSecp256k1Tx(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
   let txHash = await collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')

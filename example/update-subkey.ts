@@ -33,7 +33,9 @@ const run = async () => {
       pubkeyHash: append0x(blake160(newSubPubkey, 'hex')),
     },
   ]
-  await updateSubkeyUnlockWithSubkey(servicer, EXIST_SUB_PRIVATE_KEY, address, subkeys)
+
+  const subkeyAlgIndex = 1
+  await updateSubkeyUnlockWithSubkey(servicer, EXIST_SUB_PRIVATE_KEY, subkeyAlgIndex, address, subkeys)
 }
 
 run()

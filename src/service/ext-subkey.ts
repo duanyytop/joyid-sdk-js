@@ -1,9 +1,10 @@
 import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep, WITNESS_SUBKEY_MODE } from '../constants'
+import { signSecp256k1Tx } from '../signature/secp256k1'
 import { signTransaction } from '../signature/secp256r1'
-import { Address, ExtSubkeyReq, Hex, JoyIDInfo } from '../types'
+import { Address, Byte2, ExtSubkeyReq, Hex, JoyIDInfo } from '../types'
 import { ExtSubKey, Servicer, SubkeyUnlockReq } from '../types/joyid'
-import { append0x, keyFromPrivate, pubkeyFromPrivateKey, toSnakeCase, utf8ToHex } from '../utils'
+import { append0x, keyFromPrivate, pubkeyFromPrivateKey, SigAlg, toSnakeCase, utf8ToHex } from '../utils'
 
 export enum Action {
   Add,
@@ -15,6 +16,7 @@ const execExtensionSubkey = async (
   mainPrivateKey: Hex,
   address: Address,
   subkeys: ExtSubKey[],
+  sigAlg: SigAlg,
   action: Action,
 ) => {
   const isMainnet = address.startsWith('ckb')
@@ -62,8 +64,8 @@ const execExtensionSubkey = async (
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `${prefix}${extensionSmtEntry}`, outputType: '' },
   )
-  const key = keyFromPrivate(mainPrivateKey)
-  const signedTx = signTransaction(key, rawTx)
+  const key = keyFromPrivate(mainPrivateKey, sigAlg)
+  const signedTx = sigAlg == SigAlg.Secp256r1 ? signTransaction(key, rawTx) : signSecp256k1Tx(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
@@ -76,18 +78,21 @@ export const addExtensionSubkey = async (
   mainPrivateKey: Hex,
   from: Address,
   subkeys: ExtSubKey[],
-) => await execExtensionSubkey(servicer, mainPrivateKey, from, subkeys, Action.Add)
+  sigAlg: SigAlg,
+) => await execExtensionSubkey(servicer, mainPrivateKey, from, subkeys, sigAlg, Action.Add)
 
 export const updateExtensionSubkey = async (
   servicer: Servicer,
   mainPrivateKey: Hex,
   address: Address,
   subkeys: ExtSubKey[],
-) => await execExtensionSubkey(servicer, mainPrivateKey, address, subkeys, Action.Update)
+  sigAlg: SigAlg,
+) => await execExtensionSubkey(servicer, mainPrivateKey, address, subkeys, sigAlg, Action.Update)
 
 export const updateSubkeyUnlockWithSubkey = async (
   servicer: Servicer,
   subPrivateKey: Hex,
+  algIndex: Byte2,
   address: Address,
   subkeys: ExtSubKey[],
   joyId?: JoyIDInfo,
@@ -130,6 +135,7 @@ export const updateSubkeyUnlockWithSubkey = async (
   const req: SubkeyUnlockReq = {
     lockScript: serializeScript(joyidLock),
     pubkeyHash: append0x(blake160(subPubkey, 'hex')),
+    algIndex,
   }
 
   const { unlockEntry } = await servicer.aggregator.generateSubkeyUnlockSmt(req)

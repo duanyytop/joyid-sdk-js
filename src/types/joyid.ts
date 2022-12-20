@@ -33,6 +33,7 @@ export interface ExtSubkeyResp extends BaseResp {
 export interface SubkeyUnlockReq extends BaseReq {
   lockScript: Bytes
   pubkeyHash: Hex
+  algIndex: Byte2
 }
 
 export interface SubkeyUnlockResp extends BaseResp {

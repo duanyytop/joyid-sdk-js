@@ -62,7 +62,9 @@ const run = async () => {
     ],
   }
 
-  await updateSubkeyUnlockWithSubkey(servicer, EXIST_SUB_PRIVATE_KEY, address, subkeys, joyId)
+  const subkeyAlgIndex = 1
+
+  await updateSubkeyUnlockWithSubkey(servicer, EXIST_SUB_PRIVATE_KEY, subkeyAlgIndex,  address, subkeys, joyId)
 }
 
 run()

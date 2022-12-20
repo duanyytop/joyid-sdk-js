@@ -17,11 +17,11 @@ import { keccak_256 } from 'js-sha3'
   ]
   
   export const signSecp256k1Tx = (
-    privateKey: Hex,
+    key: EC.KeyPair,
     transaction: CKBComponents.RawTransactionToSign,
     mode = WITNESS_NATIVE_MODE,
   ): CKBComponents.RawTransaction => {
-    if (!privateKey) throw new Error('Private key or address object')
+    if (!key) throw new Error('Private key or address object')
   
     const witnessGroup = transaction.witnesses
   
@@ -56,7 +56,6 @@ import { keccak_256 } from 'js-sha3'
   
     const message = `0x${hasher.hex()}`
 
-    const key = keyFromPrivate(privateKey, SigAlg.Secp256k1)
     const pubkey = getPublicKey(key)
     console.log('sig pubkey', pubkey)
     const signature = signMessage(key, message)

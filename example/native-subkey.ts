@@ -1,4 +1,4 @@
-import { addressFromPrivateKey, append0x, pubkeyFromPrivateKey } from '../src/utils'
+import { addressFromPrivateKey, append0x, pubkeyFromPrivateKey, SigAlg } from '../src/utils'
 import { addExtensionSubkey } from '../src/service/ext-subkey'
 import { ExtSubKey } from '../src/types'
 import { blake160 } from '@nervosnetwork/ckb-sdk-utils'
@@ -31,7 +31,7 @@ const run = async () => {
       pubkeyHash: append0x(blake160(subkeyPubkey, 'hex')),
     },
   ]
-  await addExtensionSubkey(servicer, MAIN_PRIVATE_KEY, address, subkeys)
+  await addExtensionSubkey(servicer, MAIN_PRIVATE_KEY, address, subkeys, SigAlg.Secp256r1)
 }
 
 run()

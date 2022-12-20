@@ -1,16 +1,19 @@
 import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaTypeScript, getJoyIDCellDep, WITNESS_SUBKEY_MODE } from '../constants'
+import { signSecp256k1Tx } from '../signature/secp256k1'
 import { signTransaction } from '../signature/secp256r1'
-import { Address, Capacity, SubkeyUnlockReq, Hex } from '../types'
+import { Address, Capacity, SubkeyUnlockReq, Hex, Byte2 } from '../types'
 import { Servicer } from '../types/joyid'
-import { append0x, keyFromPrivate, pubkeyFromPrivateKey } from '../utils'
+import { append0x, keccak160, keyFromPrivate, pubkeyFromPrivateKey, SigAlg } from '../utils'
 
 export const sendCKBWithSubkeyUnlock = async (
   servicer: Servicer,
   subPrivateKey: Hex,
+  algIndex: Byte2,
   from: Address,
   to: Address,
   amount: Capacity,
+  sigAlg = SigAlg.Secp256r1,
 ) => {
   const isMainnet = from.startsWith('ckb')
   const fromLock = addressToScript(from)
@@ -45,10 +48,11 @@ export const sendCKBWithSubkeyUnlock = async (
   })
   const cellDeps = [cotaCellDep, getJoyIDCellDep(isMainnet)]
 
-  const subPubkey = pubkeyFromPrivateKey(subPrivateKey)
+  const subPubkey = pubkeyFromPrivateKey(subPrivateKey, sigAlg)
   const req: SubkeyUnlockReq = {
     lockScript: serializeScript(fromLock),
-    pubkeyHash: append0x(blake160(subPubkey, 'hex')),
+    pubkeyHash: sigAlg == SigAlg.Secp256r1 ? append0x(blake160(subPubkey, 'hex')) : append0x(keccak160(subPubkey)),
+    algIndex,
   }
 
   const { unlockEntry } = await servicer.aggregator.generateSubkeyUnlockSmt(req)
@@ -66,8 +70,8 @@ export const sendCKBWithSubkeyUnlock = async (
     i > 0 ? '0x' : { lock: '', inputType: '', outputType: append0x(unlockEntry) },
   )
 
-  const key = keyFromPrivate(subPrivateKey)
-  const signedTx = signTransaction(key, rawTx, WITNESS_SUBKEY_MODE)
+  const key = keyFromPrivate(subPrivateKey, sigAlg)
+  const signedTx = sigAlg == SigAlg.Secp256r1 ? signTransaction(key, rawTx, WITNESS_SUBKEY_MODE) : signSecp256k1Tx(key, rawTx, WITNESS_SUBKEY_MODE)
   console.info(JSON.stringify(signedTx))
 
   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
