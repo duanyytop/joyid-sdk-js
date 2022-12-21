@@ -2,9 +2,20 @@
   "name": "@nervina-labs/joyid-sdk",
   "version": "0.1.0",
   "description": "The JavaScript SDK of JoyID",
-  "main": "index.js",
   "author": "duanyytop <duanyytop@gmail.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/duanyytop/joyid-sdk-js/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  
+  "files": [
+    "/lib"
+  ],
   "scripts": {
     "build": "rm -rf lib && tsc",
     "lint": "eslint src/**/*.ts --fix",
