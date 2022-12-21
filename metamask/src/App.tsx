@@ -5,7 +5,7 @@ import reactLogo from './assets/react.svg'
 import './App.css'
 import { Maybe } from '@metamask/providers/dist/utils';
 import { scriptToAddress } from '@nervosnetwork/ckb-sdk-utils';
-import { Collector, getJoyIDLockScript, remove0x, sendCKBFromEthK1Lock } from '@nervina-labs/joyid-sdk';
+import { Collector, getJoyIDLockScript, remove0x } from '@nervina-labs/joyid-sdk';
 
 declare global {
   interface Window{
