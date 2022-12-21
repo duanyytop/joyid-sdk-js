@@ -4,7 +4,7 @@ export const WITNESS_NATIVE_MODE = '01'
 export const WITNESS_SUBKEY_MODE = '02'
 export const WITNESS_SOCIAL_MODE = '03'
 export const SECP256R1_PUBKEY_SIG_LEN = (1 + 64 + 64) * 2
-export const SECP256K1_PUBKEY_SIG_LEN = (1 + 64 + 65) * 2
+export const SECP256K1_PUBKEY_SIG_LEN = (1 + 20 + 65) * 2
 export const SOCIAL_LOCK_LEN = 2
 
 const TestnetInfo = {
@@ -15,7 +15,7 @@ const TestnetInfo = {
   } as CKBComponents.Script,
 
   JoyIDLockDep: {
-    outPoint: { txHash: '0x84a1b838b9fcb1c6f336aca7d1ed62cb7470b6202194ae7d4a83302dbebe31e8', index: '0x0' },
+    outPoint: { txHash: '0x073e67aec72467d75b36b2f2a3b8d211b91f687119e88a03639541b4c009e274', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 

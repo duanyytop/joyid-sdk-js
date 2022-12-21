@@ -5,7 +5,7 @@ import {
     toUint64Le,
   } from '@nervosnetwork/ckb-sdk-utils'
   import { ec as EC } from 'elliptic'
-  import { getPublicKey, keyFromPrivate, remove0x, SigAlg } from '../utils'
+  import { getSecp256k1PubkeyHash} from '../utils'
   import { Hex, } from '../types'
   import { SECP256K1_PUBKEY_SIG_LEN, WITNESS_NATIVE_MODE } from '../constants'
 import { keccak_256 } from 'js-sha3'
@@ -56,11 +56,10 @@ import { keccak_256 } from 'js-sha3'
   
     const message = `0x${hasher.hex()}`
 
-    const pubkey = getPublicKey(key)
-    console.log('sig pubkey', pubkey)
+    const pubkeyHash = getSecp256k1PubkeyHash(key)
     const signature = signMessage(key, message)
 
-    emptyWitness.lock = `0x${mode}${pubkey}${signature}`
+    emptyWitness.lock = `0x${mode}${pubkeyHash}${signature}`
   
     const signedWitnesses = [serializeWitnessArgs(emptyWitness), ...witnessGroup.slice(1)]
   

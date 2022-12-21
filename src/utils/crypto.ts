@@ -23,6 +23,8 @@ export const keyFromPrivate = (privateKey: Uint8Array | Hex, sigAlg = SigAlg.Sec
 // uncompressed pubkey without 0x
 export const getPublicKey = (key: EC.KeyPair) => key.getPublic(false, 'hex').substring(2)
 
+export const getSecp256k1PubkeyHash = (key: EC.KeyPair) => keccak160(`0x${getPublicKey(key)}`)
+
 export const addressFromPrivateKey = (privateKey: Uint8Array | Hex, sigAlg = SigAlg.Secp256r1, isMainnet = false): Address => {
   const pubkey = append0x(getPublicKey(keyFromPrivate(privateKey, sigAlg)))
   const lock = {
