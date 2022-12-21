@@ -68,6 +68,42 @@ import { keccak_256 } from 'js-sha3'
       witnesses: signedWitnesses.map(witness => (typeof witness === 'string' ? witness : serializeWitnessArgs(witness))),
     }
   }
+
+  export const generateSighashAll = (
+    transaction: CKBComponents.RawTransactionToSign,
+  ): string => {
+    const witnessGroup = transaction.witnesses
+  
+    if (!witnessGroup.length) {
+      throw new Error('WitnessGroup cannot be empty')
+    }
+    if (typeof witnessGroup[0] !== 'object') {
+      throw new Error('The first witness in the group should be type of WitnessArgs')
+    }
+  
+    const transactionHash = rawTransactionToHash(transaction)
+  
+    const emptyWitness = {
+      ...witnessGroup[0],
+      lock: `0x${'0'.repeat(SECP256K1_PUBKEY_SIG_LEN)}`,
+    }
+  
+    const serializedEmptyWitnessBytes = hexToBytes(serializeWitnessArgs(emptyWitness))
+    const serializedEmptyWitnessSize = serializedEmptyWitnessBytes.length
+  
+    const hasher = keccak_256.create()
+    hasher.update(hexToBytes(transactionHash))
+    hasher.update(hexToBytes(toUint64Le(`0x${serializedEmptyWitnessSize.toString(16)}`)))
+    hasher.update(serializedEmptyWitnessBytes)
+  
+    witnessGroup.slice(1).forEach(w => {
+      const bytes = hexToBytes(typeof w === 'string' ? w : serializeWitnessArgs(w))
+      hasher.update(hexToBytes(toUint64Le(`0x${bytes.length.toString(16)}`)))
+      hasher.update(bytes)
+    })
+  
+    return hasher.hex()
+  }
   
   export const signMessage = (key: EC.KeyPair, message: Hex) => {
     const msg = hexToBytes(message)
