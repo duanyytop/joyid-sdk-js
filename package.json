@@ -1,9 +1,9 @@
 {
-  "name": "joyid-sdk-js",
+  "name": "@nervina-labs/joyid-sdk",
   "version": "0.1.0",
   "description": "The JavaScript SDK of JoyID",
   "main": "index.js",
-  "author": "dylan",
+  "author": "duanyytop <duanyytop@gmail.com>",
   "license": "MIT",
   "scripts": {
     "build": "rm -rf lib && tsc",
