@@ -1,7 +1,7 @@
 import axios from 'axios'
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { toCamelcase } from '../utils/case-parser'
-import { IndexerCell, CollectResult } from '../types/collector'
+import { IndexerCell, CollectResult, IndexerCapcity } from '../types/collector'
 import { MIN_CAPACITY } from '../constants'
 
 export class Collector {
@@ -65,6 +65,42 @@ export class Collector {
       throw Error('Get cells error')
     } else {
       return toCamelcase(response.result.objects)
+    }
+  }
+
+  async getCapacity(lock: CKBComponents.Script): Promise<IndexerCapcity | undefined> {
+    let payload = {
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'get_cells_capacity',
+      params: [
+        {
+          script: {
+            code_hash: lock.codeHash,
+            hash_type: lock.hashType,
+            args: lock.args,
+          },
+          script_type: 'lock',
+        },
+      ],
+    }
+    const body = JSON.stringify(payload, null, '  ')
+    let response = (
+      await axios({
+        method: 'post',
+        url: this.ckbIndexerUrl,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 20000,
+        data: body,
+      })
+    ).data
+    if (response.error) {
+      console.error(response.error)
+      throw Error('Get cells capacity error')
+    } else {
+      return toCamelcase(response.result)
     }
   }
 

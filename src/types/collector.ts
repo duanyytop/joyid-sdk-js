@@ -10,6 +10,12 @@ export interface IndexerCell {
   txIndex: Hex
 }
 
+export interface IndexerCapcity {
+  blockNumber: CKBComponents.BlockNumber
+  blockHash: CKBComponents.Hash
+  capacity: Hex
+}
+
 export interface CollectResult {
   inputs: CKBComponents.CellInput[]
   capacity: bigint

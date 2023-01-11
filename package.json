@@ -1,6 +1,6 @@
 {
   "name": "@nervina-labs/joyid-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The JavaScript SDK of JoyID",
   "author": "duanyytop <duanyytop@gmail.com>",
   "license": "MIT",
