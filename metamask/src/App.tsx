@@ -1,67 +1,92 @@
 import { useState } from 'react'
-import detectEthereumProvider from '@metamask/detect-provider'
-import { MetaMaskInpageProvider } from "@metamask/providers";
-import reactLogo from './assets/react.svg'
+import joyidLogo from './assets/logo.svg'
 import './App.css'
-import { Maybe } from '@metamask/providers/dist/utils';
-import { scriptToAddress } from '@nervosnetwork/ckb-sdk-utils';
-import { Collector, getJoyIDLockScript, remove0x } from '@nervina-labs/joyid-sdk';
+import Button from '@mui/lab/LoadingButton';
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider';
+import { detect, sendTx } from './action';
 
 declare global {
   interface Window{
-    ethereum?:MetaMaskInpageProvider
+    ethereum?:any
   }
 }
 
-const detect = async (setCkbAddress: Function) => {
-  const provider = await detectEthereumProvider()
-  if (provider?.isMetaMask) {
-    if (provider !== window.ethereum) {
-      console.error('Do you have multiple wallets installed?');
-    } else {
-      const accounts: Maybe<string[]> = await window.ethereum.request({ method: 'eth_requestAccounts' })
-      if (accounts?.length && accounts?.length > 0) {
-        const ethAddress = accounts[0]
-        if (!ethAddress) {
-          throw new Error('Ethereum address error')
-        }
-        const lock = {
-          ...getJoyIDLockScript(false),
-          args: `0x0002${remove0x(ethAddress)}`,
-        }
-        const ckbAddress = scriptToAddress(lock, false)
-        setCkbAddress(ckbAddress)
-      }
-    }
-  } else {
-    console.log('Please install MetaMask!')
+const AccountCard = ({ckbAdress, balance}: {ckbAdress: string; balance: string}) => {
+  const [loading, setLoading] = useState(false)
+  const [toAddress, setToAddress] = useState('')
+  const [amount, setAmount] = useState('')
+
+  const handleToAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setToAddress(event.target.value);
   }
+
+  const handleAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAmount(event.target.value);
+  }
+
+  return (
+    <div className='account'>
+      <h2>Account:</h2>
+      <div>{ckbAdress}</div>
+      <h4>
+        <span>Balance:</span>
+        <span>{balance} ckb</span>
+      </h4>
+
+      <Divider />
+
+      <div>
+        <h2>Transfer:</h2>
+        <Box sx={{
+          width: "800px",
+          maxWidth: '100%',
+          marginTop: '20px'
+        }}>
+          <TextField fullWidth label="To CKB Address" variant="outlined"  onChange={handleToAddress}/>
+        </Box>
+        <Box sx={{
+          width: "800px",
+          maxWidth: '100%',
+          marginTop: '20px',
+        }}>
+          <TextField fullWidth label="Amount(ckb)" variant="outlined" onChange={handleAmount}/>
+        </Box>
+
+        <Button className='button' variant="contained" loading={loading} onClick={async () => {
+          setLoading(true)
+          await sendTx(ckbAdress, toAddress, amount)
+          setLoading(false)
+        }}>
+          Transfer
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 function App() {
   const [ckbAdress, setCkbAddress] = useState('')
+  const [balance, setBalance] = useState("0")
+  const [loading, setLoading] = useState(false)
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
+      <div className="App">
+      <img src={joyidLogo} className="logo joyid" alt="JoyID logo" />
       <h1>JoyID + MetaMask</h1>
       <div className="card">
-        <button onClick={() => {
-          detect(setCkbAddress)
+        {!ckbAdress && (<Button className='button' variant="contained" loading={loading} onClick={async () => {
+          setLoading(true)
+          await detect(setCkbAddress, setBalance)
+          setLoading(false)
         }}>
           Connect MetaMask
-        </button>
-        <p>{ckbAdress}</p>
-
+        </Button>)}
+        { ckbAdress && <AccountCard ckbAdress={ckbAdress} balance={balance}/> }
       </div>
     </div>
+    
   )
 }
 
