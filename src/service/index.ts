@@ -1,4 +1,5 @@
 export * from './metadata'
-export * from './transaction'
-export * from './extension'
+export * from './transfer'
+export * from './ext-subkey'
 export * from './subkey'
+export * from './social'

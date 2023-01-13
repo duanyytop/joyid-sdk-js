@@ -1,18 +1,21 @@
 import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaTypeScript, getJoyIDCellDep, WITNESS_SUBKEY_MODE } from '../constants'
-import { signTransaction } from '../signature'
-import { Address, Capacity, SubkeyUnlockReq, Hex } from '../types'
+import { signSecp256k1Tx } from '../signature/secp256k1'
+import { signTransaction } from '../signature/secp256r1'
+import { Address, Capacity, SubkeyUnlockReq, Hex, Byte2 } from '../types'
 import { Servicer } from '../types/joyid'
-import { append0x, keyFromPrivate, pubkeyFromPrivateKey } from '../utils'
+import { append0x, keccak160, keyFromPrivate, pubkeyFromPrivateKey, SigAlg } from '../utils'
 
 export const sendCKBWithSubkeyUnlock = async (
-  servicer: Servicer, 
-  subPrivateKey: Hex, 
+  servicer: Servicer,
+  subPrivateKey: Hex,
+  algIndex: Byte2,
   from: Address,
-  to: Address, 
+  to: Address,
   amount: Capacity,
+  sigAlg = SigAlg.Secp256r1,
 ) => {
-  const isMainnet = from.startsWith("ckb")
+  const isMainnet = from.startsWith('ckb')
   const fromLock = addressToScript(from)
   const cells = await servicer.collector.getCells(fromLock)
   if (cells == undefined || cells.length == 0) {
@@ -29,7 +32,7 @@ export const sendCKBWithSubkeyUnlock = async (
     depType: 'code',
   }
 
-  const {inputs, capacity: inputCapacity} = servicer.collector.collectInputs(cells, amount, FEE)
+  const { inputs, capacity: inputCapacity } = servicer.collector.collectInputs(cells, amount, FEE)
 
   const toLock = addressToScript(to)
   let outputs: CKBComponents.CellOutput[] = [
@@ -45,15 +48,16 @@ export const sendCKBWithSubkeyUnlock = async (
   })
   const cellDeps = [cotaCellDep, getJoyIDCellDep(isMainnet)]
 
-  const subPubkey = pubkeyFromPrivateKey(subPrivateKey)
+  const subPubkey = pubkeyFromPrivateKey(subPrivateKey, sigAlg)
   const req: SubkeyUnlockReq = {
     lockScript: serializeScript(fromLock),
-    pubkey_hash: append0x(blake160(subPubkey, 'hex')),
+    pubkeyHash: sigAlg == SigAlg.Secp256r1 ? append0x(blake160(subPubkey, 'hex')) : append0x(keccak160(subPubkey)),
+    algIndex,
   }
 
   const { unlockEntry } = await servicer.aggregator.generateSubkeyUnlockSmt(req)
 
-   const rawTx: any = {
+  const rawTx: any = {
     version: '0x0',
     cellDeps,
     headerDeps: [],
@@ -62,14 +66,16 @@ export const sendCKBWithSubkeyUnlock = async (
     outputsData: ['0x', '0x'],
     witnesses: [],
   }
-  rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: append0x(unlockEntry) }))
+  rawTx.witnesses = rawTx.inputs.map((_, i) =>
+    i > 0 ? '0x' : { lock: '', inputType: '', outputType: append0x(unlockEntry) },
+  )
 
-  const key = keyFromPrivate(subPrivateKey)
-  const signedTx = signTransaction(key, rawTx, WITNESS_SUBKEY_MODE)
+  const key = keyFromPrivate(subPrivateKey, sigAlg)
+  const signedTx = sigAlg == SigAlg.Secp256r1 ? signTransaction(key, rawTx, WITNESS_SUBKEY_MODE) : signSecp256k1Tx(key, rawTx, WITNESS_SUBKEY_MODE)
   console.info(JSON.stringify(signedTx))
 
   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`sendCKBWithSubkeyUnlock tx has been sent with tx hash ${txHash}`)
-  
+
   return txHash
 }

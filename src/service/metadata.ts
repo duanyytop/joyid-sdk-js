@@ -1,9 +1,9 @@
 import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep } from '../constants'
 import { Hex, JoyIDInfo } from '../types'
-import { append0x, keyFromPrivate, utf8ToHex } from '../utils'
+import { append0x, keyFromPrivate, toSnakeCase, utf8ToHex } from '../utils'
 import { addressToScript } from '@nervosnetwork/ckb-sdk-utils'
 import { Collector } from '../collector'
-import { signTransaction } from '../signature'
+import { signTransaction } from '../signature/secp256r1'
 
 const generateJoyIDMetadata = (joyIDInfo: JoyIDInfo): Hex => {
   const joyIDMeta = {
@@ -14,7 +14,7 @@ const generateJoyIDMetadata = (joyIDInfo: JoyIDInfo): Hex => {
       type: 'joy_id',
       data: {
         version: '0',
-        ...joyIDInfo,
+        ...toSnakeCase(joyIDInfo),
       },
     },
   }
@@ -23,14 +23,14 @@ const generateJoyIDMetadata = (joyIDInfo: JoyIDInfo): Hex => {
 
 export const generateJoyIDInfoTx = async (
   collector: Collector,
-  fromPrivateKey: Hex, 
-  cotaAddress: string,
+  mainPrivateKey: Hex,
+  address: string,
   joyIDInfo: JoyIDInfo,
   fee = FEE,
   isMainnet = false,
 ) => {
   const cotaType = getCotaTypeScript(isMainnet)
-  const cotaLock = addressToScript(cotaAddress)
+  const cotaLock = addressToScript(address)
   const cotaCells = await collector.getCells(cotaLock, cotaType)
   if (!cotaCells || cotaCells.length === 0) {
     throw new Error("Cota cell doesn't exist")
@@ -61,10 +61,10 @@ export const generateJoyIDInfoTx = async (
     i > 0 ? '0x' : { lock: '', inputType: '', outputType: generateJoyIDMetadata(joyIDInfo) },
   )
 
-  const key = keyFromPrivate(fromPrivateKey)
+  const key = keyFromPrivate(mainPrivateKey)
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
-  
+
   let txHash = await collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Update joyId metadata tx has been sent with tx hash ${txHash}`)
   return txHash

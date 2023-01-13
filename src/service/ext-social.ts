@@ -1,24 +1,24 @@
 import { addressToScript, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep } from '../constants'
-import { signTransaction } from '../signature'
-import { Address, ExtSubkeyReq, Hex } from '../types'
-import { ExtSubKey, Servicer } from '../types/joyid'
+import { signTransaction } from '../signature/secp256r1'
+import { Address, Hex } from '../types'
+import { ExtSocial, ExtSocialReq, Servicer } from '../types/joyid'
 import { keyFromPrivate } from '../utils'
 
 enum Action {
   Add,
-  Update
+  Update,
 }
 
-const execExtensionSubkey = async (
-  servicer: Servicer, 
-  fromPrivateKey: Hex, 
-  from: Address,
-  subkeys: ExtSubKey[],
+const execExtensionSocial = async (
+  servicer: Servicer,
+  mainPrivateKey: Hex,
+  address: Address,
+  social: ExtSocial,
   action: Action,
 ) => {
-  const isMainnet = from.startsWith("ckb")
-  let cotaLock = addressToScript(from)
+  const isMainnet = address.startsWith('ckb')
+  let cotaLock = addressToScript(address)
   const cotaType = getCotaTypeScript(isMainnet)
   const cotaCells = await servicer.collector.getCells(cotaLock, cotaType)
   if (!cotaCells || cotaCells.length === 0) {
@@ -35,22 +35,17 @@ const execExtensionSubkey = async (
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
-  const subkeyBuf = subkeys.map((subkey: ExtSubKey) => {
-    return {
-      ...subkey,
-      ext_data: subkey.ext_data.toString(),
-      alg_index: subkey.alg_index.toString(),
-    }
-  })
-
-  const extAction = action == Action.Add ? 0xF0.toString() : 0xF1.toString()
-  const extSubkeyReq: ExtSubkeyReq = {
+  const extAction = action == Action.Add ? 0xf0 : 0xf1
+  const extSocialReq: ExtSocialReq = {
     lockScript: serializeScript(cotaLock),
     extAction,
-    subkeys: subkeyBuf,
+    recoveryMode: social.recoveryMode,
+    must: social.must,
+    total: social.total,
+    signers: social.signers,
   }
 
-  const { smtRootHash, extensionSmtEntry } = await servicer.aggregator.generateExtSubkeySmt(extSubkeyReq)
+  const { smtRootHash, extensionSmtEntry } = await servicer.aggregator.generateExtSocialSmt(extSocialReq)
   const cotaCellData = `0x02${smtRootHash}`
 
   const outputsData = [cotaCellData]
@@ -70,27 +65,21 @@ const execExtensionSubkey = async (
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `${prefix}${extensionSmtEntry}`, outputType: '' },
   )
-  const key = keyFromPrivate(fromPrivateKey)
+  const key = keyFromPrivate(mainPrivateKey)
   const signedTx = signTransaction(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
-  console.info(`Extension subkey tx has been sent with tx hash ${txHash}`)
+  console.info(`Extension social tx has been sent with tx hash ${txHash}`)
   return txHash
 }
 
+export const addExtensionSocial = async (servicer: Servicer, mainPrivateKey: Hex, from: Address, social: ExtSocial) =>
+  await execExtensionSocial(servicer, mainPrivateKey, from, social, Action.Add)
 
-export const addExtensionSubkey = async (
-  servicer: Servicer, 
-  fromPrivateKey: Hex, 
-  from: Address,
-  subkeys: ExtSubKey[],
-) => await execExtensionSubkey(servicer, fromPrivateKey, from, subkeys, Action.Add)
-
-
-export const updateExtensionSubkey = async (
-  servicer: Servicer, 
-  fromPrivateKey: Hex, 
-  from: Address,
-  subkeys: ExtSubKey[],
-) => await execExtensionSubkey(servicer, fromPrivateKey, from, subkeys, Action.Update)
+export const updateExtensionSocial = async (
+  servicer: Servicer,
+  mainPrivateKey: Hex,
+  address: Address,
+  social: ExtSocial,
+) => await execExtensionSocial(servicer, mainPrivateKey, address, social, Action.Update)

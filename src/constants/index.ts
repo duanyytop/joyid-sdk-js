@@ -1,9 +1,11 @@
 export const FEE = BigInt(6000)
 export const MIN_CAPACITY = BigInt(62) * BigInt(100000000)
-export const WITNESS_NATIVE_MODE = "01"
-export const WITNESS_SUBKEY_MODE = "02"
-export const WITNESS_SOCIAL_MODE = "03"
-export const MODE_PUBKEY_SIG_LEN = (1 + 64 + 64) * 2
+export const WITNESS_NATIVE_MODE = '01'
+export const WITNESS_SUBKEY_MODE = '02'
+export const WITNESS_SOCIAL_MODE = '03'
+export const SECP256R1_PUBKEY_SIG_LEN = (1 + 64 + 64) * 2
+export const SECP256K1_PUBKEY_SIG_LEN = (1 + 20 + 65) * 2
+export const SOCIAL_LOCK_LEN = 2
 
 const TestnetInfo = {
   JoyIDLockScript: {
@@ -13,7 +15,7 @@ const TestnetInfo = {
   } as CKBComponents.Script,
 
   JoyIDLockDep: {
-    outPoint: { txHash: '0xba9f322c1c8ca59b72df1e2dfaca3eda7d9da33b10dd92b798ac48da231c3c34', index: '0x0' },
+    outPoint: { txHash: '0xe778611f59d65bc0c558a0a14a7fe12c4a937712f9cae6ca7aa952802703bd5a', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 
@@ -24,7 +26,7 @@ const TestnetInfo = {
   } as CKBComponents.Script,
 
   CotaTypeDep: {
-    outPoint: { txHash: '0xd8c7396f955348bd74a8ed4398d896dad931977b7c1e3f117649765cd3d75b86', index: '0x0' },
+    outPoint: { txHash: '0x636a786001f87cb615acfcf408be0f9a1f077001f0bbc75ca54eadfe7e221713', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 }

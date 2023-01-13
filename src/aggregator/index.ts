@@ -7,12 +7,16 @@ import {
   ExtSubkeyResp,
   SubkeyUnlockReq,
   SubkeyUnlockResp,
+  ExtSocialReq,
+  ExtSocialResp,
+  SocialUnlockReq,
+  SocialUnlockResp,
 } from '../types/joyid'
 
 export class Aggregator {
   private url: string
 
-  constructor(url: string ) {
+  constructor(url: string) {
     this.url = url
   }
 
@@ -47,16 +51,21 @@ export class Aggregator {
     }
   }
 
-
   async generateExtSubkeySmt(extension: ExtSubkeyReq): Promise<ExtSubkeyResp> {
     return (await this.baseRPC('generate_extension_subkey_smt', extension)) as Promise<ExtSubkeyResp>
   }
 
-  async generateSubkeyUnlockSmt(extension: SubkeyUnlockReq): Promise<SubkeyUnlockResp> {
-    return (await this.baseRPC('generate_subkey_unlock_smt', extension)) as Promise<SubkeyUnlockResp>
+  async generateSubkeyUnlockSmt(req: SubkeyUnlockReq): Promise<SubkeyUnlockResp> {
+    return (await this.baseRPC('generate_subkey_unlock_smt', req)) as Promise<SubkeyUnlockResp>
+  }
+
+  async generateExtSocialSmt(extension: ExtSocialReq): Promise<ExtSocialResp> {
+    return (await this.baseRPC('generate_extension_social_smt', extension)) as Promise<ExtSocialResp>
+  }
+
+  async generateSocialUnlockSmt(req: SocialUnlockReq): Promise<SocialUnlockResp> {
+    return (await this.baseRPC('generate_social_unlock_smt', req)) as Promise<SocialUnlockResp>
   }
 }
-
-
 
 const payloadId = () => Date.now()

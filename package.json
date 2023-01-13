@@ -1,10 +1,20 @@
 {
-  "name": "joyid-sdk-js",
-  "version": "0.1.0",
+  "name": "@nervina-labs/joyid-sdk",
+  "version": "0.1.2",
   "description": "The JavaScript SDK of JoyID",
-  "main": "index.js",
-  "author": "dylan",
+  "author": "duanyytop <duanyytop@gmail.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/duanyytop/joyid-sdk-js/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "/lib"
+  ],
   "scripts": {
     "build": "rm -rf lib && tsc",
     "lint": "eslint src/**/*.ts --fix",
@@ -20,7 +30,9 @@
     "camelcase-keys": "^7.0.2",
     "convert-keys": "1.3.4",
     "elliptic": "^6.5.4",
-    "fast-sha256": "^1.3.0"
+    "ethers": "^5.7.2",
+    "fast-sha256": "^1.3.0",
+    "js-sha3": "^0.8.0"
   },
   "devDependencies": {
     "@types/crypto-js": "4.1.1",
