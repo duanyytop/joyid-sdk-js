@@ -1,6 +1,6 @@
 {
   "name": "@nervina-labs/joyid-sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The JavaScript SDK of JoyID",
   "author": "duanyytop <duanyytop@gmail.com>",
   "license": "MIT",
@@ -12,7 +12,6 @@
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  
   "files": [
     "/lib"
   ],
@@ -31,6 +30,7 @@
     "camelcase-keys": "^7.0.2",
     "convert-keys": "1.3.4",
     "elliptic": "^6.5.4",
+    "ethers": "^5.7.2",
     "fast-sha256": "^1.3.0",
     "js-sha3": "^0.8.0"
   },

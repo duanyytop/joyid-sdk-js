@@ -43,7 +43,6 @@ import { keccak_256 } from 'js-sha3'
     const serializedEmptyWitnessSize = serializedEmptyWitnessBytes.length
   
     const hasher = keccak_256.create()
-    hasher.update(PERSONAL_SIGN_ETH_PREFIX)
     hasher.update(hexToBytes(transactionHash))
     hasher.update(hexToBytes(toUint64Le(`0x${serializedEmptyWitnessSize.toString(16)}`)))
     hasher.update(serializedEmptyWitnessBytes)
@@ -53,8 +52,14 @@ import { keccak_256 } from 'js-sha3'
       hasher.update(hexToBytes(toUint64Le(`0x${bytes.length.toString(16)}`)))
       hasher.update(bytes)
     })
-  
-    const message = `0x${hasher.hex()}`
+    const sighash = hasher.array()
+
+    const keccaker = keccak_256.create()
+    keccaker.update(PERSONAL_SIGN_ETH_PREFIX)
+    keccaker.update(sighash)
+    const message = `0x${keccaker.hex()}`
+
+    // console.log("hash", ethers.utils.hashMessage(sighash))
 
     const pubkeyHash = getSecp256k1PubkeyHash(key)
     const signature = signMessage(key, message)
