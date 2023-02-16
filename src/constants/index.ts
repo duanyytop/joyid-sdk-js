@@ -3,6 +3,8 @@ export const MIN_CAPACITY = BigInt(62) * BigInt(100000000)
 export const WITNESS_NATIVE_MODE = '01'
 export const WITNESS_SUBKEY_MODE = '02'
 export const WITNESS_SOCIAL_MODE = '03'
+export const WITNESS_NATIVE_SESSION_MODE = '81'
+export const WITNESS_SUBKEY_SESSION_MODE = '82'
 export const SECP256R1_PUBKEY_SIG_LEN = (1 + 64 + 64) * 2
 export const SECP256K1_PUBKEY_SIG_LEN = (1 + 20 + 65) * 2
 export const SOCIAL_LOCK_LEN = 2
@@ -15,7 +17,7 @@ const TestnetInfo = {
   } as CKBComponents.Script,
 
   JoyIDLockDep: {
-    outPoint: { txHash: '0xe778611f59d65bc0c558a0a14a7fe12c4a937712f9cae6ca7aa952802703bd5a', index: '0x0' },
+    outPoint: { txHash: '0x1281b2e2f9ae3217d6a3c01ffe5ef123bf18a2bcb5e95021a654816fc015715e', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 
