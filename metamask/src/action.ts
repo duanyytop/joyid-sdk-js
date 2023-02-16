@@ -69,7 +69,6 @@ export const sendTx =async (from: string, to: string, amount: string) => {
     }
 
     witnessGroup[0].lock = `0x01${ethAddress}${signature.slice(2)}`
-    console.log(witnessGroup[0].lock)
     const signedWitnesses = [serializeWitnessArgs(witnessGroup[0]), ...witnessGroup.slice(1)]
   
     const signedTx = {
