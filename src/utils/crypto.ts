@@ -1,4 +1,4 @@
-import { blake160, hexToBytes, scriptToAddress } from '@nervosnetwork/ckb-sdk-utils'
+import { blake160, blake2b, hexToBytes, PERSONAL, scriptToAddress } from '@nervosnetwork/ckb-sdk-utils'
 import { ec as EC } from 'elliptic'
 import { keccak_256 } from 'js-sha3'
 import { getJoyIDLockScript } from '../constants'
@@ -42,4 +42,10 @@ export const pubkeyFromPrivateKey = (privateKey: Uint8Array | Hex, sigAlg = SigA
 export const keccak160 = (message: Hex): Hex => {
   const msg = hexToBytes(message)
   return keccak_256(msg).substring(24)
+}
+
+export const blake256 = (message: Hex): Hex => {
+  const hasher = blake2b(32, null, null, PERSONAL)
+  hasher.update(hexToBytes(message))
+  return `${hasher.digest('hex')}`
 }

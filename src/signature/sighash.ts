@@ -41,6 +41,5 @@ export const sigHashAll = (transaction: CKBComponents.RawTransactionToSign): Hex
   })
 
   const message = `${hash.digest('hex')}`
-  console.log('sighash_all', message)
   return message
 }

@@ -1,14 +1,17 @@
 import {
+  blake2b,
     hexToBytes,
+    PERSONAL,
     rawTransactionToHash,
     serializeWitnessArgs,
     toUint64Le,
   } from '@nervosnetwork/ckb-sdk-utils'
   import { ec as EC } from 'elliptic'
-  import { getSecp256k1PubkeyHash} from '../utils'
+  import { blake256, exportPubKey, getSecp256k1PubkeyHash, signRsaMessage} from '../utils'
   import { Hex, } from '../types'
-  import { SECP256K1_PUBKEY_SIG_LEN, WITNESS_NATIVE_MODE } from '../constants'
+  import { SECP256K1_PUBKEY_SIG_LEN, WITNESS_NATIVE_MODE, WITNESS_NATIVE_SESSION_MODE } from '../constants'
 import { keccak_256 } from 'js-sha3'
+import NodeRSA = require('node-rsa')
 
   // personal hash, ethereum prefix  \u0019Ethereum Signed Message:\n32
   const PERSONAL_SIGN_ETH_PREFIX = [
@@ -66,6 +69,71 @@ import { keccak_256 } from 'js-sha3'
 
     emptyWitness.lock = `0x${mode}${pubkeyHash}${signature}`
   
+    const signedWitnesses = [serializeWitnessArgs(emptyWitness), ...witnessGroup.slice(1)]
+  
+    return {
+      ...transaction,
+      witnesses: signedWitnesses.map(witness => (typeof witness === 'string' ? witness : serializeWitnessArgs(witness))),
+    }
+  }
+
+  export const signSecp256k1SessionTx = (
+    key: EC.KeyPair,
+    sessionKey: NodeRSA,
+    transaction: CKBComponents.RawTransactionToSign,
+    mode = WITNESS_NATIVE_SESSION_MODE,
+  ): CKBComponents.RawTransaction => {
+    if (!key) throw new Error('Private key or address object')
+  
+    const witnessGroup = transaction.witnesses
+  
+    if (!witnessGroup.length) {
+      throw new Error('WitnessGroup cannot be empty')
+    }
+    if (typeof witnessGroup[0] !== 'object') {
+      throw new Error('The first witness in the group should be type of WitnessArgs')
+    }
+  
+    const transactionHash = rawTransactionToHash(transaction)
+  
+    const emptyWitness = {
+      ...witnessGroup[0],
+      lock: '0x',
+    }
+  
+    const serializedEmptyWitnessBytes = hexToBytes(serializeWitnessArgs(emptyWitness))
+    const serializedEmptyWitnessSize = serializedEmptyWitnessBytes.length
+  
+    let hasher = blake2b(32, null, null, PERSONAL)
+    hasher.update(hexToBytes(transactionHash))
+    hasher.update(hexToBytes(toUint64Le(`0x${serializedEmptyWitnessSize.toString(16)}`)))
+    hasher.update(serializedEmptyWitnessBytes)
+  
+    witnessGroup.slice(1).forEach(w => {
+      const bytes = hexToBytes(typeof w === 'string' ? w : serializeWitnessArgs(w))
+      hasher.update(hexToBytes(toUint64Le(`0x${bytes.length.toString(16)}`)))
+      hasher.update(bytes)
+    })
+    const message = `0x${hasher.digest('hex')}`
+    if (sessionKey.getKeySize() !== 2048) {
+      throw new Error('RSA key size error')
+    }
+    const signature = signRsaMessage(sessionKey, message)
+
+    // Build sessoin message and attestation with secp256r1
+    const sessionVer = '00'
+    const sessionPubkey = exportPubKey(sessionKey)
+    const sessionMessage = blake256(`0x${sessionVer}${sessionPubkey}`)
+    const keccaker = keccak_256.create()
+    keccaker.update(PERSONAL_SIGN_ETH_PREFIX)
+    keccaker.update(hexToBytes(`0x${sessionMessage}`))
+    const attestationMessage = `0x${keccaker.hex()}`
+    
+    const pubkeyHash = getSecp256k1PubkeyHash(key)
+    const attestation = signMessage(key, attestationMessage)
+
+    emptyWitness.lock = `0x${mode}${sessionPubkey}${signature}${pubkeyHash}${sessionVer}${attestation}`
+
     const signedWitnesses = [serializeWitnessArgs(emptyWitness), ...witnessGroup.slice(1)]
   
     return {
