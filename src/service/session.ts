@@ -1,7 +1,7 @@
 import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import * as NodeRSA from 'node-rsa'
 import { Collector } from '../collector'
-import { FEE, getJoyIDCellDep } from '../constants'
+import { FEE, getCotaTypeScript, getJoyIDCellDep, WITNESS_SUBKEY_SESSION_MODE } from '../constants'
 import { signSecp256k1SessionTx } from '../signature/secp256k1'
 import { signSessionTx } from '../signature/secp256r1'
 import { Address, Byte2, Capacity, Hex, Servicer, SubkeyUnlockReq } from '../types'
@@ -81,6 +81,17 @@ export const sendCKBFromNativeSessionLock = async (
       throw new Error('The from address has no live cells')
     }
     const { inputs, capacity: inputCapacity } = servicer.collector.collectInputs(cells, amount, FEE)
+
+    const cotaType = getCotaTypeScript(isMainnet)
+    const cotaCells = await servicer.collector.getCells(fromLock, cotaType)
+    if (!cotaCells || cotaCells.length === 0) {
+      throw new Error("Cota cell doesn't exist")
+    }
+    const cotaCell = cotaCells[0]
+    const cotaCellDep: CKBComponents.CellDep = {
+      outPoint: cotaCell.outPoint,
+      depType: 'code',
+    }
   
     const toLock = addressToScript(to)
     let outputs: CKBComponents.CellOutput[] = [
@@ -94,7 +105,7 @@ export const sendCKBFromNativeSessionLock = async (
       capacity: `0x${changeCapacity.toString(16)}`,
       lock: fromLock,
     })
-    const cellDeps = [getJoyIDCellDep(isMainnet)]
+    const cellDeps = [cotaCellDep, getJoyIDCellDep(isMainnet)]
 
     const subPubkey = pubkeyFromPrivateKey(subPrivateKey, sigAlg)
     const req: SubkeyUnlockReq = {
@@ -117,7 +128,12 @@ export const sendCKBFromNativeSessionLock = async (
     rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: append0x(unlockEntry)  }))
   
     const key = keyFromPrivate(subPrivateKey, sigAlg)
-    const signedTx = await signSessionTx(key, sessionKey, rawTx)
+    let signedTx
+    if (sigAlg == SigAlg.Secp256k1) {
+      signedTx = signSecp256k1SessionTx(key, sessionKey, rawTx, WITNESS_SUBKEY_SESSION_MODE)
+    } else {
+      signedTx = signSessionTx(key, sessionKey, rawTx, WITNESS_SUBKEY_SESSION_MODE)
+    }
     console.info(JSON.stringify(signedTx))
   
     let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
