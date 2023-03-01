@@ -1,10 +1,11 @@
 import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep, WITNESS_SUBKEY_MODE } from '../constants'
+import { signRSATx } from '../signature/rsa2048'
 import { signSecp256k1Tx } from '../signature/secp256k1'
 import { signTransaction } from '../signature/secp256r1'
 import { Address, Byte2, ExtSubkeyReq, Hex, JoyIDInfo } from '../types'
 import { ExtSubKey, Servicer, SubkeyUnlockReq } from '../types/joyid'
-import { append0x, keyFromPrivate, pubkeyFromPrivateKey, SigAlg, toSnakeCase, utf8ToHex } from '../utils'
+import { append0x, keyFromPrivate, pemToKey, pubkeyFromPrivateKey, SigAlg, toSnakeCase, utf8ToHex } from '../utils'
 
 export enum Action {
   Add,
@@ -64,8 +65,14 @@ const execExtensionSubkey = async (
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `${prefix}${extensionSmtEntry}`, outputType: '' },
   )
-  const key = keyFromPrivate(mainPrivateKey, sigAlg)
-  const signedTx = sigAlg == SigAlg.Secp256r1 ? signTransaction(key, rawTx) : signSecp256k1Tx(key, rawTx)
+  let signedTx: CKBComponents.RawTransaction
+  if (sigAlg == SigAlg.RSA2048) {
+    const key = pemToKey(mainPrivateKey)
+    signedTx = signRSATx(key, rawTx)
+  } else {
+    const key = keyFromPrivate(mainPrivateKey, sigAlg)
+    signedTx = sigAlg == SigAlg.Secp256r1 ? signTransaction(key, rawTx) : signSecp256k1Tx(key, rawTx)
+  }
   console.info(JSON.stringify(signedTx))
 
   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
