@@ -7,6 +7,7 @@ export const WITNESS_NATIVE_SESSION_MODE = '81'
 export const WITNESS_SUBKEY_SESSION_MODE = '82'
 export const SECP256R1_PUBKEY_SIG_LEN = (1 + 64 + 64) * 2
 export const SECP256K1_PUBKEY_SIG_LEN = (1 + 20 + 65) * 2
+export const RSA2048_PUBKEY_SIG_LEN = (1 + 4 + 256 + 256) * 2
 export const SOCIAL_LOCK_LEN = 2
 
 const TestnetInfo = {

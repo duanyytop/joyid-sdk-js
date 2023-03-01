@@ -1,5 +1,8 @@
+import { blake160, hexToBytes, scriptToAddress } from '@nervosnetwork/ckb-sdk-utils'
 import * as NodeRSA from 'node-rsa'
-import { Hex } from '../types'
+import { getJoyIDLockScript } from '../constants'
+import { Address, Hex } from '../types'
+import { append0x } from './hex'
 
 export const pemToKey = (privateKeyPem: string): NodeRSA => {
     const key = new NodeRSA(privateKeyPem)
@@ -24,18 +27,27 @@ export const exportPubKey = (key: NodeRSA) => {
     return pubKey.toString('hex')
 }
 
-export const signRsaMessage = (key: NodeRSA, message: Hex) => {
+export const addressFromPemKey = (privateKeyPem: string, isMainnet = false): Address => {
+    const pubkey = append0x(exportPubKey(pemToKey(privateKeyPem)))
+    const lock = {
+      ...getJoyIDLockScript(isMainnet),
+      args: `0x0003${blake160(hexToBytes(pubkey), 'hex')}`,
+    }
+    return scriptToAddress(lock, isMainnet)
+  }
+
+export const signRSAMessage = (key: NodeRSA, message: Hex) => {
     if (!message.startsWith('0x')) {
         throw new Error('Message format error')
     }
     const signature = key.sign(Buffer.from(message.replace('0x', ''), 'hex'), 'hex')
 
-    verifyRsaSignature(key, message, signature)
+    verifyRSASignature(key, message, signature)
 
     return signature
 }
 
-export const verifyRsaSignature = (key: NodeRSA, message: Hex, signature: Hex) => {
+export const verifyRSASignature = (key: NodeRSA, message: Hex, signature: Hex) => {
     if (!message.startsWith('0x')) {
         throw new Error('Message format error')
     }

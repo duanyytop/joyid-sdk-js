@@ -10,7 +10,7 @@ import { ec as EC } from 'elliptic'
 import * as NodeRSA from 'node-rsa'
 import sha256 from 'fast-sha256'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
-import { append0x, blake256, exportPubKey, getPublicKey, remove0x, signRsaMessage } from '../utils'
+import { append0x, blake256, exportPubKey, getPublicKey, remove0x, signRSAMessage } from '../utils'
 import { Hex, Servicer, SocialUnlockReq } from '../types'
 import { SECP256R1_PUBKEY_SIG_LEN, SOCIAL_LOCK_LEN, WITNESS_NATIVE_MODE, WITNESS_NATIVE_SESSION_MODE } from '../constants'
 
@@ -194,7 +194,7 @@ export const signSessionTx = (
   if (sessionKey.getKeySize() !== 2048) {
     throw new Error('RSA key size error')
   }
-  const signature = signRsaMessage(sessionKey, message)
+  const signature = signRSAMessage(sessionKey, message)
 
   // Build sessoin message and attestation with secp256r1
   const sessionVer = '00'

@@ -7,7 +7,7 @@ import {
     toUint64Le,
   } from '@nervosnetwork/ckb-sdk-utils'
   import { ec as EC } from 'elliptic'
-  import { blake256, exportPubKey, getSecp256k1PubkeyHash, signRsaMessage} from '../utils'
+  import { blake256, exportPubKey, getSecp256k1PubkeyHash, signRSAMessage} from '../utils'
   import { Hex, } from '../types'
   import { SECP256K1_PUBKEY_SIG_LEN, WITNESS_NATIVE_MODE, WITNESS_NATIVE_SESSION_MODE } from '../constants'
 import { keccak_256 } from 'js-sha3'
@@ -118,7 +118,7 @@ import NodeRSA = require('node-rsa')
     if (sessionKey.getKeySize() !== 2048) {
       throw new Error('RSA key size error')
     }
-    const signature = signRsaMessage(sessionKey, message)
+    const signature = signRSAMessage(sessionKey, message)
 
     // Build sessoin message and attestation with secp256r1
     const sessionVer = '00'

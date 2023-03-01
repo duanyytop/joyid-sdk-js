@@ -7,7 +7,7 @@ import { append0x, remove0x } from './hex'
 
 export enum SigAlg {
   Secp256r1,
-  Secp256k1
+  Secp256k1,
 }
 
 export const keyFromPrivate = (privateKey: Uint8Array | Hex, sigAlg = SigAlg.Secp256r1): EC.KeyPair => {
