@@ -2,7 +2,7 @@ import { Collector } from '../src/collector'
 import { sendCKBFromEthK1Lock, sendCKBFromRSALock } from '../src/service/transfer'
 import { addressFromPemKey, addressFromPrivateKey, SigAlg } from '../src/utils'
 
-export const MAIN_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----
+const MAIN_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC2BbnAeCcYCWUf
 F93Gf74LcJSxDPgttyAxe3SdEtSWVpb7IqeWeqr64EHiDld9NusW5gRc7FeYdhG3
 jlGbqOvVPBNZuQGFJzZ7hBUJgbd1oQf9Sd2MS0VPW/cODCAGo0UZPmN8PAR+XfYy
