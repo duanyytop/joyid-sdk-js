@@ -1,6 +1,6 @@
 import { Aggregator } from '../src/aggregator'
 import { Collector } from '../src/collector'
-import { addressFromPemKey, SigAlg } from '../src/utils'
+import { addressFromPemKey, exportPubKey, pemToKey, SigAlg } from '../src/utils'
 import { sendCKBWithSubkeyUnlock } from '../src/service/subkey'
 
 const MAIN_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----
@@ -73,12 +73,12 @@ const run = async () => {
       ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
       ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
     }),
-    aggregator: new Aggregator('http://127.0.0.1:3030'),
+    aggregator: new Aggregator('https://cota.nervina.dev/aggregator'),
   }
   const fromAddress = addressFromPemKey(MAIN_PRIVATE_KEY)
   console.log('from address: ', fromAddress)
 
-  const subPubkey = addressFromPemKey(SUB_PRIVATE_KEY)
+  const subPubkey = exportPubKey(pemToKey(SUB_PRIVATE_KEY))
   console.log('subkey pubkey: ', subPubkey)
 
   const subkeyAlgIndex = 3

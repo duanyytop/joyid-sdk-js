@@ -1,7 +1,7 @@
-import { addressFromPemKey, addressFromPrivateKey, append0x, exportPubKey, keccak160, pemToKey, pubkeyFromPrivateKey, SigAlg } from '../src/utils'
+import { addressFromPemKey, append0x, exportPubKey, keccak160, pemToKey, pubkeyFromPrivateKey, SigAlg } from '../src/utils'
 import { addExtensionSubkey } from '../src/service/ext-subkey'
 import { ExtSubKey } from '../src/types'
-import { blake160, hexToBytes } from '@nervosnetwork/ckb-sdk-utils'
+import { blake160 } from '@nervosnetwork/ckb-sdk-utils'
 import { Aggregator } from '../src/aggregator'
 import { Collector } from '../src/collector'
 
@@ -73,7 +73,7 @@ const run = async () => {
       ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
       ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
     }),
-    aggregator: new Aggregator('http://127.0.0.1:3030'),
+    aggregator: new Aggregator('https://cota.nervina.dev/aggregator'),
   }
   const address = addressFromPemKey(MAIN_PRIVATE_KEY)
   console.log('from address: ', address)
