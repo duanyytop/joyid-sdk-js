@@ -5,7 +5,7 @@ import { signSecp256k1Tx } from '../signature/secp256k1'
 import { signTransaction } from '../signature/secp256r1'
 import { Address, Capacity, SubkeyUnlockReq, Hex, Byte2 } from '../types'
 import { Servicer } from '../types/joyid'
-import { append0x, keccak160, keyFromPrivate, pemToKey, pubkeyFromPrivateKey, SigAlg } from '../utils'
+import { append0x, exportPubKey, keccak160, keyFromPrivate, pemToKey, pubkeyFromPrivateKey, SigAlg } from '../utils'
 
 export const sendCKBWithSubkeyUnlock = async (
   servicer: Servicer,
@@ -49,10 +49,17 @@ export const sendCKBWithSubkeyUnlock = async (
   })
   const cellDeps = [cotaCellDep, getJoyIDCellDep(isMainnet)]
 
-  const subPubkey = pubkeyFromPrivateKey(subPrivateKey, sigAlg)
+  let pubkeyHash: Hex
+  if (sigAlg == SigAlg.RSA2048) {
+    const subPubkey = `0x${exportPubKey(pemToKey(subPrivateKey))}`
+    pubkeyHash = append0x(blake160(subPubkey, 'hex'))
+  } else {
+    const subPubkey = pubkeyFromPrivateKey(subPrivateKey, sigAlg)
+    pubkeyHash = sigAlg == SigAlg.Secp256r1 ? append0x(blake160(subPubkey, 'hex')) : append0x(keccak160(subPubkey))
+  }
   const req: SubkeyUnlockReq = {
     lockScript: serializeScript(fromLock),
-    pubkeyHash: sigAlg == SigAlg.Secp256r1 ? append0x(blake160(subPubkey, 'hex')) : append0x(keccak160(subPubkey)),
+    pubkeyHash,
     algIndex,
   }
 

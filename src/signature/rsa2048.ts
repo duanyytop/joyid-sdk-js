@@ -6,13 +6,10 @@ import {
   serializeWitnessArgs,
   toUint64Le,
 } from '@nervosnetwork/ckb-sdk-utils'
-import { ec as EC } from 'elliptic'
 import * as NodeRSA from 'node-rsa'
-import sha256 from 'fast-sha256'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
-import { append0x, blake256, exportPubKey, getPublicKey, remove0x, signRSAMessage } from '../utils'
-import { Hex, Servicer, SocialUnlockReq } from '../types'
-import { RSA2048_PUBKEY_SIG_LEN, SECP256R1_PUBKEY_SIG_LEN, SOCIAL_LOCK_LEN, WITNESS_NATIVE_MODE, WITNESS_NATIVE_SESSION_MODE } from '../constants'
+import { blake256, exportPubKey, signRSAMessage } from '../utils'
+import { RSA2048_PUBKEY_SIG_LEN, WITNESS_NATIVE_MODE, WITNESS_NATIVE_SESSION_MODE } from '../constants'
 
 export const signRSATx = (
   key: NodeRSA,
@@ -51,8 +48,7 @@ export const signRSATx = (
     hasher.update(bytes)
   })
 
-  const message = `${hasher.digest('hex')}`
-  console.log('message', message)
+  const message = `0x${hasher.digest('hex')}`
 
   const pubKey = exportPubKey(key)
 
