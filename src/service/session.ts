@@ -2,10 +2,11 @@ import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-s
 import * as NodeRSA from 'node-rsa'
 import { Collector } from '../collector'
 import { FEE, getCotaTypeScript, getJoyIDCellDep, WITNESS_SUBKEY_SESSION_MODE } from '../constants'
+import { signRSASessionTx } from '../signature/rsa2048'
 import { signSecp256k1SessionTx } from '../signature/secp256k1'
 import { signSessionTx } from '../signature/secp256r1'
 import { Address, Byte2, Capacity, Hex, Servicer, SubkeyUnlockReq } from '../types'
-import { append0x, keccak160, keyFromPrivate, pubkeyFromPrivateKey, SigAlg } from '../utils'
+import { append0x, exportPubKey, keccak160, keyFromPrivate, pemToKey, pubkeyFromPrivateKey, SigAlg } from '../utils'
 
 export const sendCKBFromNativeSessionLock = async (
     collector: Collector,
@@ -107,10 +108,17 @@ export const sendCKBFromNativeSessionLock = async (
     })
     const cellDeps = [cotaCellDep, getJoyIDCellDep(isMainnet)]
 
-    const subPubkey = pubkeyFromPrivateKey(subPrivateKey, sigAlg)
+    let pubkeyHash: Hex
+    if (sigAlg == SigAlg.RSA2048) {
+      const subPubkey = `0x${exportPubKey(pemToKey(subPrivateKey))}`
+      pubkeyHash = append0x(blake160(subPubkey, 'hex'))
+    } else {
+      const subPubkey = pubkeyFromPrivateKey(subPrivateKey, sigAlg)
+      pubkeyHash = sigAlg == SigAlg.Secp256r1 ? append0x(blake160(subPubkey, 'hex')) : append0x(keccak160(subPubkey))
+    }
     const req: SubkeyUnlockReq = {
       lockScript: serializeScript(fromLock),
-      pubkeyHash: sigAlg == SigAlg.Secp256r1 ? append0x(blake160(subPubkey, 'hex')) : append0x(keccak160(subPubkey)),
+      pubkeyHash,
       algIndex,
     }
 
@@ -126,17 +134,21 @@ export const sendCKBFromNativeSessionLock = async (
       witnesses: [],
     }
     rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: append0x(unlockEntry)  }))
-  
-    const key = keyFromPrivate(subPrivateKey, sigAlg)
+    
     let signedTx
     if (sigAlg == SigAlg.Secp256k1) {
+      const key = keyFromPrivate(subPrivateKey, sigAlg)
       signedTx = signSecp256k1SessionTx(key, sessionKey, rawTx, WITNESS_SUBKEY_SESSION_MODE)
-    } else {
+    } else if (sigAlg == SigAlg.Secp256r1){
+      const key = keyFromPrivate(subPrivateKey, sigAlg)
       signedTx = signSessionTx(key, sessionKey, rawTx, WITNESS_SUBKEY_SESSION_MODE)
+    } else {
+      const key = pemToKey(subPrivateKey)
+      signedTx = signRSASessionTx(key, sessionKey, rawTx, WITNESS_SUBKEY_SESSION_MODE)
     }
     console.info(JSON.stringify(signedTx))
   
     let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
-    console.info(`sendCKBFromP256NativeSessionLock tx has been sent with tx hash ${txHash}`)
+    console.info(`sendCKBFromSubkeySessionLock tx has been sent with tx hash ${txHash}`)
     return txHash
   }

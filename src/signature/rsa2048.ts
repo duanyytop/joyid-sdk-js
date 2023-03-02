@@ -111,7 +111,7 @@ export const signRSASessionTx = (
   // Build sessoin message and attestation with secp256r1
   const sessionVer = '00'
   const sessionPubkey = exportPubKey(sessionKey)
-  const sessionMessage = blake256(`0x${sessionVer}${sessionPubkey}`)
+  const sessionMessage = `0x${blake256(`0x${sessionVer}${sessionPubkey}`)}`
   const pubKey = exportPubKey(key)
   const attestation = signRSAMessage(key, sessionMessage)
 
