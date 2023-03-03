@@ -15,7 +15,7 @@ const run = async () => {
       ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
       ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
     }),
-    aggregator: new Aggregator('http://127.0.0.1:3030'),
+    aggregator: new Aggregator('https://cota.nervina.dev/aggregator'),
   }
   const address = addressFromPrivateKey(MAIN_PRIVATE_KEY, SigAlg.Secp256k1)
   console.log('from address: ', address)
@@ -26,7 +26,7 @@ const run = async () => {
 
   const subkeys: ExtSubKey[] = [
     {
-      extData: 3,
+      extData: 4,
       algIndex: 2,
       pubkeyHash: append0x(keccak160(subkeyPubkey)),
     },
