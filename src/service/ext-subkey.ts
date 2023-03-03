@@ -2,7 +2,7 @@ import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-s
 import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep, WITNESS_SUBKEY_MODE } from '../constants'
 import { signRSATx } from '../signature/rsa2048'
 import { signSecp256k1Tx } from '../signature/secp256k1'
-import { signTransaction } from '../signature/secp256r1'
+import { signSecp256r1Tx } from '../signature/secp256r1'
 import { Address, Byte2, ExtSubkeyReq, Hex, JoyIDInfo } from '../types'
 import { ExtSubKey, Servicer, SubkeyUnlockReq } from '../types/joyid'
 import { append0x, keyFromPrivate, pemToKey, pubkeyFromPrivateKey, SigAlg, toSnakeCase, utf8ToHex } from '../utils'
@@ -71,7 +71,7 @@ const execExtensionSubkey = async (
     signedTx = signRSATx(key, rawTx)
   } else {
     const key = keyFromPrivate(mainPrivateKey, sigAlg)
-    signedTx = sigAlg == SigAlg.Secp256r1 ? signTransaction(key, rawTx) : signSecp256k1Tx(key, rawTx)
+    signedTx = sigAlg == SigAlg.Secp256r1 ? signSecp256r1Tx(key, rawTx) : signSecp256k1Tx(key, rawTx)
   }
   console.info(JSON.stringify(signedTx))
 
@@ -164,7 +164,7 @@ export const updateSubkeyUnlockWithSubkey = async (
     rawTx.witnesses.push(generateJoyIDMetadata(joyId))
   }
   const key = keyFromPrivate(subPrivateKey)
-  const signedTx = signTransaction(key, rawTx, WITNESS_SUBKEY_MODE)
+  const signedTx = signSecp256r1Tx(key, rawTx, WITNESS_SUBKEY_MODE)
   console.info(JSON.stringify(signedTx))
 
   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')

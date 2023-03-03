@@ -1,9 +1,9 @@
 import { addressToScript, serializeOutPoint, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaCellDep, getCotaTypeScript, getJoyIDCellDep } from '../constants'
-import { signSocialTx } from '../signature/secp256r1'
+import { signSocialTx } from '../signature/social'
 import { Address } from '../types'
 import { ExtSubKey, ExtSubkeyReq, Servicer, SocialFriend, SocialUnlockReq } from '../types/joyid'
-import { keyFromPrivate, remove0x, u16ToBe } from '../utils'
+import { keyFromPrivate, pemToKey, remove0x, SigAlg, u16ToBe } from '../utils'
 
 export const socialUnlockTx = async (
   servicer: Servicer,
@@ -94,8 +94,7 @@ export const socialUnlockTx = async (
     friends,
   }
 
-  const keys = friends.map(friend => keyFromPrivate(friend.privateKey))
-  const signedTx = await signSocialTx(servicer, keys, socialMsg, socialUnlockReq, rawTx)
+  const signedTx = await signSocialTx(servicer, socialMsg, socialUnlockReq, rawTx)
   console.info(JSON.stringify(signedTx))
 
   let cycles = await servicer.collector.getCkb().rpc.dryRunTransaction(signedTx)

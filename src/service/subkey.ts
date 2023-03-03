@@ -2,7 +2,7 @@ import { addressToScript, blake160, serializeScript } from '@nervosnetwork/ckb-s
 import { FEE, getCotaTypeScript, getJoyIDCellDep, WITNESS_SUBKEY_MODE } from '../constants'
 import { signRSATx } from '../signature/rsa2048'
 import { signSecp256k1Tx } from '../signature/secp256k1'
-import { signTransaction } from '../signature/secp256r1'
+import { signSecp256r1Tx } from '../signature/secp256r1'
 import { Address, Capacity, SubkeyUnlockReq, Hex, Byte2 } from '../types'
 import { Servicer } from '../types/joyid'
 import { append0x, exportPubKey, keccak160, keyFromPrivate, pemToKey, pubkeyFromPrivateKey, SigAlg } from '../utils'
@@ -84,7 +84,7 @@ export const sendCKBWithSubkeyUnlock = async (
     signedTx = signRSATx(key, rawTx, WITNESS_SUBKEY_MODE)
   } else {
     const key = keyFromPrivate(subPrivateKey, sigAlg)
-    signedTx = sigAlg == SigAlg.Secp256r1 ? signTransaction(key, rawTx, WITNESS_SUBKEY_MODE) : signSecp256k1Tx(key, rawTx, WITNESS_SUBKEY_MODE)
+    signedTx = sigAlg == SigAlg.Secp256r1 ? signSecp256r1Tx(key, rawTx, WITNESS_SUBKEY_MODE) : signSecp256k1Tx(key, rawTx, WITNESS_SUBKEY_MODE)
   }
   console.info(JSON.stringify(signedTx))
 

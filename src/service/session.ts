@@ -4,7 +4,7 @@ import { Collector } from '../collector'
 import { FEE, getCotaTypeScript, getJoyIDCellDep, WITNESS_SUBKEY_SESSION_MODE } from '../constants'
 import { signRSASessionTx } from '../signature/rsa2048'
 import { signSecp256k1SessionTx } from '../signature/secp256k1'
-import { signSessionTx } from '../signature/secp256r1'
+import { signSecp256r1SessionTx } from '../signature/secp256r1'
 import { Address, Byte2, Capacity, Hex, Servicer, SubkeyUnlockReq } from '../types'
 import { append0x, exportPubKey, keccak160, keyFromPrivate, pemToKey, pubkeyFromPrivateKey, SigAlg } from '../utils'
 
@@ -55,7 +55,7 @@ export const sendCKBFromNativeSessionLock = async (
     if (sigAlg == SigAlg.Secp256k1) {
       signedTx = signSecp256k1SessionTx(key, sessionKey, rawTx)
     } else {
-      signedTx = signSessionTx(key, sessionKey, rawTx)
+      signedTx = signSecp256r1SessionTx(key, sessionKey, rawTx)
     }
     console.info(JSON.stringify(signedTx))
   
@@ -141,7 +141,7 @@ export const sendCKBFromNativeSessionLock = async (
       signedTx = signSecp256k1SessionTx(key, sessionKey, rawTx, WITNESS_SUBKEY_SESSION_MODE)
     } else if (sigAlg == SigAlg.Secp256r1){
       const key = keyFromPrivate(subPrivateKey, sigAlg)
-      signedTx = signSessionTx(key, sessionKey, rawTx, WITNESS_SUBKEY_SESSION_MODE)
+      signedTx = signSecp256r1SessionTx(key, sessionKey, rawTx, WITNESS_SUBKEY_SESSION_MODE)
     } else {
       const key = pemToKey(subPrivateKey)
       signedTx = signRSASessionTx(key, sessionKey, rawTx, WITNESS_SUBKEY_SESSION_MODE)

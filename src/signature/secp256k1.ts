@@ -65,7 +65,7 @@ import NodeRSA = require('node-rsa')
     // console.log("hash", ethers.utils.hashMessage(sighash))
 
     const pubkeyHash = getSecp256k1PubkeyHash(key)
-    const signature = signMessage(key, message)
+    const signature = signSecp256k1Message(key, message)
 
     emptyWitness.lock = `0x${mode}${pubkeyHash}${signature}`
   
@@ -130,7 +130,7 @@ import NodeRSA = require('node-rsa')
     const attestationMessage = `0x${keccaker.hex()}`
     
     const pubkeyHash = getSecp256k1PubkeyHash(key)
-    const attestation = signMessage(key, attestationMessage)
+    const attestation = signSecp256k1Message(key, attestationMessage)
 
     emptyWitness.lock = `0x${mode}${sessionPubkey}${signature}${pubkeyHash}${sessionVer}${attestation}`
 
@@ -178,7 +178,7 @@ import NodeRSA = require('node-rsa')
     return hasher.hex()
   }
   
-  export const signMessage = (key: EC.KeyPair, message: Hex) => {
+  export const signSecp256k1Message = (key: EC.KeyPair, message: Hex) => {
     const msg = hexToBytes(message)
     const { r, s, recoveryParam } = key.sign(msg, {
       canonical: true,

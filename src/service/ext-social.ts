@@ -1,6 +1,6 @@
 import { addressToScript, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { FEE, getCotaTypeScript, getCotaCellDep, getJoyIDCellDep } from '../constants'
-import { signTransaction } from '../signature/secp256r1'
+import { signSecp256r1Tx } from '../signature/secp256r1'
 import { Address, Hex } from '../types'
 import { ExtSocial, ExtSocialReq, Servicer } from '../types/joyid'
 import { keyFromPrivate } from '../utils'
@@ -66,7 +66,7 @@ const execExtensionSocial = async (
     i > 0 ? '0x' : { lock: '', inputType: `${prefix}${extensionSmtEntry}`, outputType: '' },
   )
   const key = keyFromPrivate(mainPrivateKey)
-  const signedTx = signTransaction(key, rawTx)
+  const signedTx = signSecp256r1Tx(key, rawTx)
   console.info(JSON.stringify(signedTx))
 
   let txHash = await servicer.collector.getCkb().rpc.sendTransaction(signedTx, 'passthrough')
