@@ -3,7 +3,7 @@ import { FEE, getCotaCellDep, getCotaTypeScript, getJoyIDCellDep } from '../cons
 import { signSocialTx } from '../signature/social'
 import { Address } from '../types'
 import { ExtSubKey, ExtSubkeyReq, Servicer, SocialFriend, SocialUnlockReq } from '../types/joyid'
-import { keyFromPrivate, pemToKey, remove0x, SigAlg, u16ToBe } from '../utils'
+import { remove0x, u16ToBe } from '../utils'
 
 export const socialUnlockTx = async (
   servicer: Servicer,

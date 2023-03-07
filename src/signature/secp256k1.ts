@@ -56,11 +56,7 @@ import NodeRSA = require('node-rsa')
       hasher.update(bytes)
     })
     const sighash = hasher.array()
-
-    const keccaker = keccak_256.create()
-    keccaker.update(PERSONAL_SIGN_ETH_PREFIX)
-    keccaker.update(sighash)
-    const message = `0x${keccaker.hex()}`
+    const message = calcEthPersonalHash(sighash)
 
     // console.log("hash", ethers.utils.hashMessage(sighash))
 
@@ -75,6 +71,13 @@ import NodeRSA = require('node-rsa')
       ...transaction,
       witnesses: signedWitnesses.map(witness => (typeof witness === 'string' ? witness : serializeWitnessArgs(witness))),
     }
+  }
+
+  export const calcEthPersonalHash = (sighash: number[]): Hex => {
+    const keccaker = keccak_256.create()
+    keccaker.update(PERSONAL_SIGN_ETH_PREFIX)
+    keccaker.update(sighash)
+    return `0x${keccaker.hex()}`
   }
 
   export const signSecp256k1SessionTx = (

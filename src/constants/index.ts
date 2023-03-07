@@ -18,7 +18,7 @@ const TestnetInfo = {
   } as CKBComponents.Script,
 
   JoyIDLockDep: {
-    outPoint: { txHash: '0x74cd4495f6fc25d3e863e221a199e72e15fea0d8a76c9f119741877593f4e985', index: '0x0' },
+    outPoint: { txHash: '0xf35178c7a1a5a4e5b164157aa549a493cebc9a3079b6a9ede7ae5207adb3f4d4', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 

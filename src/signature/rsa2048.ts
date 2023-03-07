@@ -10,6 +10,7 @@ import * as NodeRSA from 'node-rsa'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
 import { blake256, exportPubKey, signRSAMessage } from '../utils'
 import { RSA2048_PUBKEY_SIG_LEN, WITNESS_NATIVE_MODE, WITNESS_NATIVE_SESSION_MODE } from '../constants'
+import { sha256Hash } from './secp256r1'
 
 export const signRSATx = (
   key: NodeRSA,
@@ -48,13 +49,22 @@ export const signRSATx = (
     hasher.update(bytes)
   })
 
-  const message = `0x${hasher.digest('hex')}`
+  const message = `${hasher.digest('hex')}`
+  console.log('message', message)
+
+  const base64 = Buffer.from(message).toString('base64url')
+  const sighashAll = Buffer.from(base64, 'utf8').toString('hex')
 
   const pubKey = exportPubKey(key)
 
-  const signature = signRSAMessage(key, message)
+  const authData = '49960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d97630162f9fb77'
+  const clientData = `7b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a22${sighashAll}222c226f726967696e223a22687474703a2f2f6c6f63616c686f73743a38303030222c2263726f73734f726967696e223a66616c73657d`
 
-  emptyWitness.lock = `0x${mode}${pubKey}${signature}`
+  const clientDataHash = sha256Hash(clientData)
+  const signData = `0x${authData}${clientDataHash}`
+  const signature = signRSAMessage(key, signData)
+
+  emptyWitness.lock = `0x${mode}${pubKey}${signature}${authData}${clientData}`
 
   const signedWitnesses = [serializeWitnessArgs(emptyWitness), ...witnessGroup.slice(1)]
 
@@ -111,11 +121,21 @@ export const signRSASessionTx = (
   // Build sessoin message and attestation with secp256r1
   const sessionVer = '00'
   const sessionPubkey = exportPubKey(sessionKey)
-  const sessionMessage = `0x${blake256(`0x${sessionVer}${sessionPubkey}`)}`
-  const pubKey = exportPubKey(key)
-  const attestation = signRSAMessage(key, sessionMessage)
+  const sessionMessage = `${blake256(`0x${sessionVer}${sessionPubkey}`)}`
 
-  emptyWitness.lock = `0x${mode}${sessionPubkey}${signature}${pubKey}${sessionVer}${attestation}`
+  const base64 = Buffer.from(sessionMessage).toString('base64url')
+  const sighashAll = Buffer.from(base64, 'utf8').toString('hex')
+
+  const pubKey = exportPubKey(key)
+
+  const authData = '49960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d97630162f9fb77'
+  const clientData = `7b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a22${sighashAll}222c226f726967696e223a22687474703a2f2f6c6f63616c686f73743a38303030222c2263726f73734f726967696e223a66616c73657d`
+
+  const clientDataHash = sha256Hash(clientData)
+  const signData = `0x${authData}${clientDataHash}`
+  const attestation = signRSAMessage(key, signData)
+
+  emptyWitness.lock = `0x${mode}${sessionPubkey}${signature}${pubKey}${sessionVer}${attestation}${authData}${clientData}`
 
   const signedWitnesses = [serializeWitnessArgs(emptyWitness), ...witnessGroup.slice(1)]
 
