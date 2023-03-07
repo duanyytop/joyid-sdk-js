@@ -16,7 +16,7 @@ const TO_ADDRESS = 'ckt1qyq897k5m53wxzup078jwkucvvsu8kzv55rqqm6glm'
 const run = async () => {
   const servicer = {
     collector: new Collector({
-      ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
+      ckbNodeUrl: 'http://127.0.0.1:8114',
       ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
     }),
     aggregator: new Aggregator('https://cota.nervina.dev/aggregator'),

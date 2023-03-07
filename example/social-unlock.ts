@@ -1,4 +1,4 @@
-import { addressFromPemKey, addressFromPrivateKey, append0x, exportPubKey, pemToKey, pubkeyFromPrivateKey, SigAlg } from '../src/utils'
+import { addressFromPemKey, addressFromPrivateKey, append0x, exportPubKey, keccak160, pemToKey, pubkeyFromPrivateKey, SigAlg } from '../src/utils'
 import { socialUnlockTx } from '../src/service/social'
 import { ExtSubKey, SocialFriend } from '../src/types'
 import { Aggregator } from '../src/aggregator'
@@ -62,10 +62,10 @@ const FRIEND4_PRIVATE_KEY = '0xd7d8106165aa18acf855fe3521d0c733ec6ad5afae2e1ff06
 const run = async () => {
   const servicer = {
     collector: new Collector({
-      ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
-      ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
+      ckbNodeUrl: 'http://127.0.0.1:8114',
+      ckbIndexerUrl: 'http://127.0.0.1:8114',
     }),
-    aggregator: new Aggregator('https://cota.nervina.dev/aggregator'),
+    aggregator: new Aggregator('http://127.0.0.1:3030'),
   }
 
   const ownerAddress = addressFromPrivateKey(MAIN_PRIVATE_KEY)
@@ -95,7 +95,7 @@ const run = async () => {
     },
     {
       lockScript: friend2Lock,
-      pubkey: friend2SubPubkey,
+      pubkey: append0x(keccak160(friend2SubPubkey)) ,
       unlockMode: 2,
       algIndex: 2,
       privateKey: FRIEND2_SUBKEY_PRIVATE_KEY,
@@ -112,7 +112,7 @@ const run = async () => {
   ]
 
   const subkey: ExtSubKey = {
-    extData: 1,
+    extData: 2,
     algIndex: 1,
     pubkeyHash: append0x(blake160(newSubPubkey, 'hex')),
   }

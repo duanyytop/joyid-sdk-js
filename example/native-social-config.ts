@@ -55,10 +55,10 @@ const FRIEND4_PRIVATE_KEY = '0xd7d8106165aa18acf855fe3521d0c733ec6ad5afae2e1ff06
 const run = async () => {
   const servicer = {
     collector: new Collector({
-      ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
-      ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
+      ckbNodeUrl: 'http://127.0.0.1:8114',
+      ckbIndexerUrl: 'http://127.0.0.1:8114',
     }),
-    aggregator: new Aggregator('https://cota.nervina.dev/aggregator'),
+    aggregator: new Aggregator('http://127.0.0.1:3030'),
   }
 
   const address = addressFromPrivateKey(MAIN_PRIVATE_KEY)

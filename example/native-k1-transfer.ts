@@ -9,7 +9,7 @@ const TO_ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgq
 
 const run = async () => {
   const collector = new Collector({
-    ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
+    ckbNodeUrl: 'http://127.0.0.1:8114',
     ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
   })
   const fromAddress = addressFromPrivateKey(MAIN_PRIVATE_KEY, SigAlg.Secp256k1)
