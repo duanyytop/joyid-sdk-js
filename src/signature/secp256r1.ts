@@ -11,14 +11,14 @@ import * as NodeRSA from 'node-rsa'
 import sha256 from 'fast-sha256'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
 import { append0x, blake256, exportPubKey, getPublicKey, remove0x, signRSAMessage } from '../utils'
-import { Hex, Servicer, SocialFriend, SocialUnlockReq } from '../types'
-import { SECP256R1_PUBKEY_SIG_LEN, SOCIAL_LOCK_LEN, WITNESS_NATIVE_MODE, WITNESS_NATIVE_SESSION_MODE } from '../constants'
+import { Hex } from '../types'
+import { SECP256R1_PUBKEY_SIG_LEN, WITNESS_NATIVE_MODE, WITNESS_NATIVE_SESSION_MODE } from '../constants'
 
-export const signSecp256r1Tx = (
+export const calcSignedWitnessLock = (
   key: EC.KeyPair,
   transaction: CKBComponents.RawTransactionToSign,
   mode = WITNESS_NATIVE_MODE,
-): CKBComponents.RawTransaction => {
+): Hex => {
   if (!key) throw new Error('Private key or address object')
 
   const witnessGroup = transaction.witnesses
@@ -66,7 +66,25 @@ export const signSecp256r1Tx = (
   const signData = `0x${authData}${clientDataHash}`
   const signature = signSecp256r1Message(key, signData)
 
-  emptyWitness.lock = `0x${mode}${pubKey}${signature}${authData}${clientData}`
+  return `${mode}${pubKey}${signature}${authData}${clientData}`
+}
+
+export const signSecp256r1Tx = (
+  key: EC.KeyPair,
+  transaction: CKBComponents.RawTransactionToSign,
+  mode = WITNESS_NATIVE_MODE,
+): CKBComponents.RawTransaction => {
+  const witnessGroup = transaction.witnesses
+  if (!witnessGroup.length) {
+    throw new Error('WitnessGroup cannot be empty')
+  }
+  if (typeof witnessGroup[0] !== 'object') {
+    throw new Error('The first witness in the group should be type of WitnessArgs')
+  }
+  const emptyWitness = {
+    ...witnessGroup[0],
+    lock: `0x${calcSignedWitnessLock(key, transaction, mode)}`,
+  }
 
   const signedWitnesses = [serializeWitnessArgs(emptyWitness), ...witnessGroup.slice(1)]
 
