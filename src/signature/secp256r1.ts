@@ -95,12 +95,12 @@ export const signSecp256r1Tx = (
 }
 
 
-export const signSecp256r1SessionTx = (
+export const calcSessionSignedWitnessLock = (
   key: EC.KeyPair,
   sessionKey: NodeRSA,
   transaction: CKBComponents.RawTransactionToSign,
   mode = WITNESS_NATIVE_SESSION_MODE,
-): CKBComponents.RawTransaction => {
+): Hex => {
   if (!key) throw new Error('Private key or address object')
 
   const witnessGroup = transaction.witnesses
@@ -151,7 +151,29 @@ export const signSecp256r1SessionTx = (
   const signData = `0x${authData}${clientDataHash}`
   const attestation = signSecp256r1Message(key, signData)
 
-  emptyWitness.lock = `0x${mode}${sessionPubkey}${signature}${pubKey}${sessionVer}${attestation}${authData}${clientData}`
+  return `0x${mode}${sessionPubkey}${signature}${pubKey}${sessionVer}${attestation}${authData}${clientData}`
+}
+
+
+export const signSecp256r1SessionTx = (
+  key: EC.KeyPair,
+  sessionKey: NodeRSA,
+  transaction: CKBComponents.RawTransactionToSign,
+  mode = WITNESS_NATIVE_SESSION_MODE,
+): CKBComponents.RawTransaction => {
+  const witnessGroup = transaction.witnesses
+
+  if (!witnessGroup.length) {
+    throw new Error('WitnessGroup cannot be empty')
+  }
+  if (typeof witnessGroup[0] !== 'object') {
+    throw new Error('The first witness in the group should be type of WitnessArgs')
+  }
+
+  const emptyWitness = {
+    ...witnessGroup[0],
+    lock: calcSessionSignedWitnessLock(key, sessionKey, transaction, mode),
+  }
 
   const signedWitnesses = [serializeWitnessArgs(emptyWitness), ...witnessGroup.slice(1)]
 
