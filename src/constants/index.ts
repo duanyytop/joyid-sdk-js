@@ -36,13 +36,13 @@ const TestnetInfo = {
 
 const MainnetInfo = {
   JoyIDLockScript: {
-    codeHash: '0x9302db6cc1344b81a5efee06962abcb40427ecfcbe69d471b01b2658ed948075',
+    codeHash: '0xd23761b364210735c19c60561d213fb3beae2fd6172743719eff6920e020baac',
     hashType: 'type',
     args: '',
   } as CKBComponents.Script,
 
   JoyIDLockDep: {
-    outPoint: { txHash: '0xfa683440f605af7cc117755f8bcf6acec70fc4a69265602117810dfa41444159', index: '0x0' },
+    outPoint: { txHash: '0xf35178c7a1a5a4e5b164157aa549a493cebc9a3079b6a9ede7ae5207adb3f4d4', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 

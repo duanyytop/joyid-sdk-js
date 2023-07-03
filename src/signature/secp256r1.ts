@@ -190,7 +190,6 @@ export const signSecp256r1Message = (key: EC.KeyPair, message: Hex) => {
   const msg = sha256(hexToBytes(message))
   const sig = key.sign(msg)
   let result = key.verify(msg, sig)
-  // console.log('validate signature: ', result)
 
   const fmtR = sig.r.toString(16).padStart(64, '0')
   const fmtS = sig.s.toString(16).padStart(64, '0')
