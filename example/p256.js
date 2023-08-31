@@ -62,21 +62,11 @@ const recoveryWebAuthn = () => {
             recoveryParam: 1,
         }
         const pk = ec.recoverPubKey(message, signature, signature.recoveryParam)
-        // console.log(`pubkey: `, pk.inspect())
+        console.log(`pubkey: `, pk.inspect())
+        console.log(pk.getX().toString('hex'))
     } catch (error) {
         console.error(error)
     }
 }
 
-var suite = new Benchmark.Suite;
-const start  = new Date().getTime();
-suite.add('P256 pubkey recovery', function() {
-    recoveryWebAuthn()
-})
-.on('cycle', function(event) {
-  console.log(String(event.target));
-})
-.run({ 'async': false });
-const end  = new Date().getTime();
-
-console.log(`Time-consuming: ${end - start} ms`)
+recoveryWebAuthn()

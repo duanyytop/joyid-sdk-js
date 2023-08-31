@@ -55,6 +55,10 @@ export class Aggregator {
     return (await this.baseRPC('generate_extension_subkey_smt', extension)) as Promise<ExtSubkeyResp>
   }
 
+  async generateAddingSubkeySmt(extension: ExtSubkeyReq): Promise<ExtSubkeyResp> {
+    return (await this.baseRPC('generate_adding_subkey_smt', extension)) as Promise<ExtSubkeyResp>
+  }
+
   async generateSubkeyUnlockSmt(req: SubkeyUnlockReq): Promise<SubkeyUnlockResp> {
     return (await this.baseRPC('generate_subkey_unlock_smt', req)) as Promise<SubkeyUnlockResp>
   }
