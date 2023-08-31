@@ -1,5 +1,3 @@
-import { ExtSubKey } from '../src/types'
-import { blake160 } from '@nervosnetwork/ckb-sdk-utils'
 import { Aggregator } from '../src/aggregator'
 import { Collector } from '../src/collector'
 import { addressFromPrivateKey, append0x, pubkeyFromPrivateKey } from '../src/utils'
@@ -16,8 +14,8 @@ const TO_ADDRESS = 'ckt1qyq897k5m53wxzup078jwkucvvsu8kzv55rqqm6glm'
 const run = async () => {
   const servicer = {
     collector: new Collector({
-      ckbNodeUrl: 'http://127.0.0.1:8114',
-      ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
+      ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
+    ckbIndexerUrl: 'https://testnet.ckb.dev/rpc',
     }),
     aggregator: new Aggregator('https://cota.nervina.dev/aggregator'),
   }

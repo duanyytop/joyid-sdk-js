@@ -60,6 +60,7 @@ export class Collector {
         data: body,
       })
     ).data
+    
     if (response.error) {
       console.error(response.error)
       throw Error('Get cells error')

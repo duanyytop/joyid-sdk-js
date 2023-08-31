@@ -3,6 +3,7 @@ export const MIN_CAPACITY = BigInt(62) * BigInt(100000000)
 export const WITNESS_NATIVE_MODE = '01'
 export const WITNESS_SUBKEY_MODE = '02'
 export const WITNESS_SOCIAL_MODE = '03'
+export const WITNESS_NATIVE_PARTIAL_MODE = '04'
 export const WITNESS_NATIVE_SESSION_MODE = '81'
 export const WITNESS_SUBKEY_SESSION_MODE = '82'
 export const SECP256R1_PUBKEY_SIG_LEN = (1 + 64 + 64) * 2
@@ -18,7 +19,7 @@ const TestnetInfo = {
   } as CKBComponents.Script,
 
   JoyIDLockDep: {
-    outPoint: { txHash: '0x437d4343c1eb5901c74ba34f6e9b1a1a25d72b441659d73bb1b40e9924bda6fb', index: '0x0' },
+    outPoint: { txHash: '0x4dcf3f3b09efac8995d6cbee87c5345e812d310094651e0c3d9a730f32dc9263', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 
@@ -42,7 +43,7 @@ const MainnetInfo = {
   } as CKBComponents.Script,
 
   JoyIDLockDep: {
-    outPoint: { txHash: '0x437d4343c1eb5901c74ba34f6e9b1a1a25d72b441659d73bb1b40e9924bda6fb', index: '0x0' },
+    outPoint: { txHash: '0xf524502184cd833f174af7b7b2e0837c6212bc25217fca0512aefe0ae09dfe7f', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 
