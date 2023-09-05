@@ -161,8 +161,6 @@ const generateAddingSubkeyTx = async (poolTxHash: string) => {
   let signedTx = signSecp256r1Tx(key, rawTx, WITNESS_NATIVE_PARTIAL_MODE)
   signedTx.inputs = realInputs
 
-  console.log("signed tx", JSON.stringify(signedTx))
-
   return signedTx
 }
 
