@@ -37,13 +37,13 @@ const TestnetInfo = {
 
 const MainnetInfo = {
   JoyIDLockScript: {
-    codeHash: '0xd23761b364210735c19c60561d213fb3beae2fd6172743719eff6920e020baac',
+    codeHash: '0xd00c84f0ec8fd441c38bc3f87a371f547190f2fcff88e642bc5bf54b9e318323',
     hashType: 'type',
     args: '',
   } as CKBComponents.Script,
 
   JoyIDLockDep: {
-    outPoint: { txHash: '0xf524502184cd833f174af7b7b2e0837c6212bc25217fca0512aefe0ae09dfe7f', index: '0x0' },
+    outPoint: { txHash: '0xf05188e5f3a6767fc4687faf45ba5f1a6e25d3ada6129dae8722cb282f262493', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 
@@ -54,7 +54,7 @@ const MainnetInfo = {
   } as CKBComponents.Script,
 
   CotaTypeDep: {
-    outPoint: { txHash: '0x875db3381ebe7a730676c110e1c0d78ae1bdd0c11beacb7db4db08e368c2cd95', index: '0x0' },
+    outPoint: { txHash: '0xabaa25237554f0d6c586dc010e7e85e6870bcfd9fb8773257ecacfbe1fd738a0', index: '0x0' },
     depType: 'depGroup',
   } as CKBComponents.CellDep,
 }
