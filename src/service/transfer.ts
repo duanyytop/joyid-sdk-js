@@ -23,17 +23,27 @@ export const sendCKBFromP256Lock = async (
   const { inputs, capacity: inputCapacity } = collector.collectInputs(cells, amount, FEE)
 
   const toLock = addressToScript(to)
-  let outputs: CKBComponents.CellOutput[] = [
-    {
-      capacity: `0x${amount.toString(16)}`,
-      lock: toLock,
-    },
-  ]
-  const changeCapacity = inputCapacity - FEE - amount
-  outputs.push({
-    capacity: `0x${changeCapacity.toString(16)}`,
-    lock: fromLock,
-  })
+  let outputs: CKBComponents.CellOutput[] = []
+  if (inputCapacity + FEE === amount) {
+    outputs.push(
+      {
+        capacity: `0x${inputCapacity.toString(16)}`,
+        lock: toLock,
+      },
+    )
+  } else {
+    outputs.push(
+      {
+        capacity: `0x${amount.toString(16)}`,
+        lock: toLock,
+      },
+    )
+    const changeCapacity = inputCapacity - FEE - amount
+    outputs.push({
+      capacity: `0x${changeCapacity.toString(16)}`,
+      lock: fromLock,
+    })
+  }
   const cellDeps = [getJoyIDCellDep(isMainnet)]
 
   const rawTx: any = {
@@ -42,7 +52,7 @@ export const sendCKBFromP256Lock = async (
     headerDeps: [],
     inputs,
     outputs,
-    outputsData: ['0x', '0x'],
+    outputsData: outputs.map(_o => '0x'),
     witnesses: [],
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: '' }))
@@ -73,17 +83,27 @@ export const sendCKBFromEthK1Lock = async (
   const { inputs, capacity: inputCapacity } = collector.collectInputs(cells, amount, FEE)
 
   const toLock = addressToScript(to)
-  let outputs: CKBComponents.CellOutput[] = [
-    {
-      capacity: `0x${amount.toString(16)}`,
-      lock: toLock,
-    },
-  ]
-  const changeCapacity = inputCapacity - FEE - amount
-  outputs.push({
-    capacity: `0x${changeCapacity.toString(16)}`,
-    lock: fromLock,
-  })
+  let outputs: CKBComponents.CellOutput[] = []
+  if (inputCapacity + FEE === amount) {
+    outputs.push(
+      {
+        capacity: `0x${inputCapacity.toString(16)}`,
+        lock: toLock,
+      },
+    )
+  } else {
+    outputs.push(
+      {
+        capacity: `0x${amount.toString(16)}`,
+        lock: toLock,
+      },
+    )
+    const changeCapacity = inputCapacity - FEE - amount
+    outputs.push({
+      capacity: `0x${changeCapacity.toString(16)}`,
+      lock: fromLock,
+    })
+  }
   const cellDeps = [getJoyIDCellDep(isMainnet)]
 
   const rawTx: any = {
@@ -92,7 +112,7 @@ export const sendCKBFromEthK1Lock = async (
     headerDeps: [],
     inputs,
     outputs,
-    outputsData: ['0x', '0x'],
+    outputsData: outputs.map(_o => '0x'),
     witnesses: [],
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: '' }))
@@ -165,17 +185,27 @@ export const sendCKBFromRSALock = async (
   const { inputs, capacity: inputCapacity } = collector.collectInputs(cells, amount, FEE)
 
   const toLock = addressToScript(to)
-  let outputs: CKBComponents.CellOutput[] = [
-    {
-      capacity: `0x${amount.toString(16)}`,
-      lock: toLock,
-    },
-  ]
-  const changeCapacity = inputCapacity - FEE - amount
-  outputs.push({
-    capacity: `0x${changeCapacity.toString(16)}`,
-    lock: fromLock,
-  })
+  let outputs: CKBComponents.CellOutput[] = []
+  if (inputCapacity + FEE === amount) {
+    outputs.push(
+      {
+        capacity: `0x${inputCapacity.toString(16)}`,
+        lock: toLock,
+      },
+    )
+  } else {
+    outputs.push(
+      {
+        capacity: `0x${amount.toString(16)}`,
+        lock: toLock,
+      },
+    )
+    const changeCapacity = inputCapacity - FEE - amount
+    outputs.push({
+      capacity: `0x${changeCapacity.toString(16)}`,
+      lock: fromLock,
+    })
+  }
   const cellDeps = [getJoyIDCellDep(isMainnet)]
 
   const rawTx: any = {
@@ -184,7 +214,7 @@ export const sendCKBFromRSALock = async (
     headerDeps: [],
     inputs,
     outputs,
-    outputsData: ['0x', '0x'],
+    outputsData: outputs.map(_o => '0x'),
     witnesses: [],
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: '' }))

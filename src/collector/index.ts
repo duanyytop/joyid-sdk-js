@@ -121,6 +121,9 @@ export class Collector {
         break
       }
     }
+    if (sum === needCapacity) {
+      return { inputs, capacity: sum - fee }
+    }
     if (sum < needCapacity + fee) {
       throw Error('Capacity not enough')
     }
