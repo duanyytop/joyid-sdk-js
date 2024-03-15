@@ -10,7 +10,7 @@ const TO_ADDRESS = 'ckt1qyq897k5m53wxzup078jwkucvvsu8kzv55rqqm6glm'
 const run = async () => {
   const collector = new Collector({
     ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
-    ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
+    ckbIndexerUrl: 'https://testnet.ckb.dev/rpc',
   })
   const fromAddress = addressFromPrivateKey(MAIN_PRIVATE_KEY)
   console.log('from address: ', fromAddress)

@@ -5,6 +5,8 @@ export interface SubKeyInfo {
   credentialId: Hex
   alg: Hex
   frontEnd: string
+  deviceName?: string
+  deviceType?: string
 }
 
 export interface JoyIDInfo {
@@ -16,6 +18,8 @@ export interface JoyIDInfo {
   credentialId: Hex
   alg: Hex
   frontEnd?: string
+  deviceName?: string
+  deviceType?: string
   cotaCellId?: Hex
   subKeys?: SubKeyInfo[]
 }

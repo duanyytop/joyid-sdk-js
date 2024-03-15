@@ -12,8 +12,8 @@ const MAIN_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906
 const run = async () => {
   const servicer = {
     collector: new Collector({
-      ckbNodeUrl: 'https://testnet.ckb.dev/rpc',
-      ckbIndexerUrl: 'https://testnet.ckb.dev/indexer',
+      ckbNodeUrl: 'http://127.0.0.1:8114',
+      ckbIndexerUrl: 'http://127.0.0.1:8114',
     }),
     aggregator: new Aggregator('http://127.0.0.1:3030'),
   }
@@ -26,7 +26,7 @@ const run = async () => {
 
   const subkeys: ExtSubKey[] = [
     {
-      extData: 3,
+      extData: 5,
       algIndex: 2,
       pubkeyHash: append0x(keccak160(subkeyPubkey)),
     },

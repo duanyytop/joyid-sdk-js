@@ -1,7 +1,7 @@
 {
   "name": "metamask",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,10 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@metamask/detect-provider": "^2.0.0",
     "@metamask/providers": "^10.2.1",
-    "@nervina-labs/joyid-sdk": "^0.1.0",
+    "@mui/lab": "^5.0.0-alpha.115",
+    "@mui/material": "^5.11.4",
+    "@nervina-labs/joyid-sdk": "^0.1.2",
     "@nervosnetwork/ckb-sdk-utils": "^0.103.1",
+    "ethers": "^5.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

@@ -60,6 +60,7 @@ export class Collector {
         data: body,
       })
     ).data
+    
     if (response.error) {
       console.error(response.error)
       throw Error('Get cells error')
@@ -119,6 +120,9 @@ export class Collector {
       if (sum >= needCapacity + MIN_CAPACITY + fee) {
         break
       }
+    }
+    if (sum === needCapacity) {
+      return { inputs, capacity: sum - fee }
     }
     if (sum < needCapacity + fee) {
       throw Error('Capacity not enough')

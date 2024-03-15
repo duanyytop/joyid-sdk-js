@@ -28,7 +28,6 @@ export class Aggregator {
       params: req ? toSnakeCase(req) : null,
     }
     const body = JSON.stringify(payload, null, '')
-    console.log(body)
     try {
       let response = (
         await axios({
@@ -53,6 +52,10 @@ export class Aggregator {
 
   async generateExtSubkeySmt(extension: ExtSubkeyReq): Promise<ExtSubkeyResp> {
     return (await this.baseRPC('generate_extension_subkey_smt', extension)) as Promise<ExtSubkeyResp>
+  }
+
+  async generateAddingSubkeySmt(extension: ExtSubkeyReq): Promise<ExtSubkeyResp> {
+    return (await this.baseRPC('generate_adding_subkey_smt', extension)) as Promise<ExtSubkeyResp>
   }
 
   async generateSubkeyUnlockSmt(req: SubkeyUnlockReq): Promise<SubkeyUnlockResp> {

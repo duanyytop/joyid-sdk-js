@@ -2,8 +2,8 @@ import { Collector } from '../src'
 import { FEE, JoyIDInfo } from '../src'
 import { generateJoyIDInfoTx } from '../src/service'
 
-const FROM_PRIVATE_KEY = '0xc5a991867f2406bfe6d17028bcc09492b4959ec55ef5812e5f5cf12b3529f7af'
-const FROM_ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqqy4amdm2f533gyrre3vuv4styyt7rlln3sxvqp4s'
+const FROM_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906260f1f657761'
+const FROM_ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq9sfrkfah2cj79nyp7e6p283ualq8779rscnjmrj'
 
 const run = async () => {
   const collector = new Collector({
@@ -19,28 +19,36 @@ const run = async () => {
     credentialId: '0x459d12c09a65e58e22a9d8d6fa843c3d',
     alg: '0x01',
     frontEnd: 'https:://app.joy.id',
+    deviceName: "Chrome on Windows",
+    deviceType: "PC",
     cotaCellId: '0x0000000000000b6b',
     subKeys: [
       {
         pubKey:
-          '0x650e48cf029c8a04788c02d7d88bad7b62918714137d0cd486b5b3aff53d0c2baecabd8d23107933f85fdf13cd814a0ba3d1848329b0504d7134a88962e9bde3',
+          '0x124e48cf029c8a04788c02d7d88bad7b62918714137d0cd486b5b3aff53d0c2baecabd8d23107933f85fdf13cd814a0ba3d1848329b0504d7134a88962e9bde3',
         credentialId: '0x459d12c09a65e58e22a9d8d6fa843c3d',
         alg: '0x01',
         frontEnd: 'https:://app.joy.id',
+        deviceName: "Firefox on Windows",
+        deviceType: "PC",
       },
       {
         pubKey:
-          '0x290e48cf029c8a04788c02d7d88bad7b62918714137d0cd486b5b3aff53d0c2baecabd8d23107933f85fdf13cd814a0ba3d1848329b0504d7134a88962e9bde3',
+          '0x340e48cf029c8a04788c02d7d88bad7b62918714137d0cd486b5b3aff53d0c2baecabd8d23107933f85fdf13cd814a0ba3d1848329b0504d7134a88962e9bde8',
         credentialId: '0x369d12c09a65e58e22a9d8d6fa843c3d',
         alg: '0x01',
         frontEnd: 'https:://app.joy.id',
+        deviceName: "Chrome on Windows",
+        deviceType: "PC",
       },
       {
         pubKey:
-          '0x290e48cf029c8a04788c02d7d88bad7b62918714137d0cd486b5b3aff53d0c2baecabd8d23107933f85fdf13cd814a0ba3d1848329b0504d7134a88962e9bde3',
+          '0x560e48cf029c8a04788c02d7d88bad7b62918714137d0cd486b5b3aff53d0c2baecabd8d23107933f85fdf13cd814a0ba3d1848329b0504d7134a88962e9bde4',
         credentialId: '0x369d12c09a65e58e22a9d8d6fa843c3d',
         alg: '0x01',
         frontEnd: 'https:://app.joy.id',
+        deviceName: "Safari on iOS",
+        deviceType: "Mobile",
       },
     ],
   }

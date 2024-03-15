@@ -64,6 +64,7 @@ export interface SocialFriend {
   algIndex: Byte2
   privateKey?: Hex
   address?: Address
+  webAuthnMsg?: Hex
 }
 
 export interface SocialUnlockReq extends BaseReq {
